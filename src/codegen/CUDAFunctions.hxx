@@ -13,18 +13,6 @@ using namespace std;
 
 namespace yaccgen {
 
-	typedef struct {
-		string sizeX;
-		string sizeY;
-		string sizeZ;
-
-		string blockX;
-		string blockY;
-
-		string dynamicMemSize;
-
-	} CUDAKernel;
-
 	class CUDAFunctions {
 	public:
 

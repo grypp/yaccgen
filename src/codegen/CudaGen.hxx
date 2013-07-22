@@ -8,36 +8,30 @@
 #ifndef CUDAGEN_HXX_
 #define CUDAGEN_HXX_
 
-#include "../Utils/YACCGenLog.hxx"
 #include "../Utils/YACCGenUtils.hxx"
-#include "../Utils/CPPParser.hxx"
-#include "../Utils/AccTokens.hxx"
-#include "CUDAFunctions.hxx"
-#include "KernelFunctions.hxx"
 #include "YAS_CudaKernel.hxx"
+#include "../Utils/CPPParser.hxx"
+#include "KernelFunctions.hxx"
+
+using namespace std;
 
 namespace yaccgen {
-	namespace codegen {
 
-		const static string ERR_GEN = "GEN_001";
+	namespace codegen {
 
 		class CudaGen {
 
 		public:
 			CudaGen();
-
 			~CudaGen();
-
-			void YAS_gridfy_1d(stringstream&, YAS_CudaKernel&);
-
-			YAS_CudaKernel YAS_identifier(stringstream &ss);
-
-			CUDAKernel YAS_gen_kernel();
-
-			CUDAKernel YAS_gen_kernel(int blkx, int blky, int thrdx, int thrdy, int thrdz, int dynm);
+			void YAS_gridfy_1d(stringstream &ss, YAS_CudaKernel &currentKernel);
+			vector<YAS_CudaKernel> YAS_identifier(stringstream &ss);
 
 		private:
 			string YAS_gen_kernelName();
+			CUDAKernel YAS_gen_kernel();
+			CUDAKernel YAS_gen_kernel(int blkx, int blky, int thrdx, int thrdy, int thrdz, int dynm);
+
 		};
 	}
 }

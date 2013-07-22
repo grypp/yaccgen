@@ -13,6 +13,9 @@
 #include <algorithm>
 #include <vector>
 
+#include "YACCGenLog.hxx"
+#include "YACCGenException.hxx"
+
 using namespace std;
 
 namespace yaccgen {
@@ -21,7 +24,7 @@ namespace yaccgen {
 	};
 
 	enum PTYPE {
-		GENKERNEL, KERNEL, GROUPLET, FRONTEND, COMPILEALL
+		GENKERNEL, COMPILEALL
 	};
 
 	typedef struct {
@@ -99,14 +102,22 @@ namespace yaccgen {
 	static const int stringLength = sizeof(alphanum) - 1;
 
 	static __inline__ string gen_str(int len) {
+		srand(time(NULL));
 		char *str = (char*) calloc(len + 1, sizeof(char));
 		for (int i = 0; i < len; i++)
 			str[i] = alphanum[rand() % stringLength];
 		return str;
 	}
 
+	static __inline__ const string mergePath(string path, string fname) {
+		path += '/';
+		path += fname;
+		return path;
+	}
+
 #ifndef _WIN32_
 #define ERROR_EXEC "ERROR"
+
 	static __inline__ std::string exec_system(const char* cmd) {
 		FILE* pipe = popen(cmd, "r");
 		if (!pipe) return ERROR_EXEC;
@@ -118,6 +129,13 @@ namespace yaccgen {
 		pclose(pipe);
 		return result;
 	}
+
+	static __inline__ std::string exec_newdir(string fname) {
+		string command = "mkdir ";
+		command += fname;
+		return exec_system(command.c_str());
+	}
+
 #endif
 }
 

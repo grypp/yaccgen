@@ -15,6 +15,18 @@
 namespace yaccgen {
 	namespace codegen {
 
+		typedef struct {
+			string sizeX;
+			string sizeY;
+			string sizeZ;
+
+			string blockX;
+			string blockY;
+
+			string dynamicMemSize;
+
+		} CUDAKernel;
+
 		class YAS_CudaKernel {
 
 		public:

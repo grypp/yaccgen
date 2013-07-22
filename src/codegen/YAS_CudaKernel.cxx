@@ -13,7 +13,7 @@ namespace yaccgen {
 		}
 
 		YAS_CudaKernel::~YAS_CudaKernel() {
-			delete this;
+			//	delete this;
 		}
 
 		string YAS_CudaKernel::toString_kernelConf() {

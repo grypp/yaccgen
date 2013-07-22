@@ -13,30 +13,39 @@ using namespace std;
 
 namespace yaccgen {
 
-		const static string tok_pragma = "#pragma";
-		const static string tok_acc = "acc";
-		const static string tok_acc_parallel = "parallel";
-		const static string tok_acc_kernels = "kernels";
-		const static string tok_acc_reduction = "reduction";
-		const static string tok_acc_loop = "loop";
+	const static string tok_pragma = "#pragma";
+	const static string tok_acc = "acc";
+	const static string tok_acc_parallel = "parallel";
+	const static string tok_acc_kernels = "kernels";
+	const static string tok_acc_reduction = "reduction";
+	const static string tok_acc_loop = "loop";
 
-		const static string tok_acc_copyin = "copyin";
-		const static string tok_acc_copyout = "copyout";
-		const static string tok_acc_copyinout = "copy";
+	const static string tok_acc_copyin = "copyin";
+	const static string tok_acc_copyout = "copyout";
+	const static string tok_acc_copyinout = "copy";
 
-		const static char tok_openCrlyBracket = '{';
-		const static char tok_closeCrlyBracket = '}';
-		const static char tok_openBracket = '(';
-		const static char tok_closeBracket = ')';
-		const static char tok_semicolon = ';';
-		const static char tok_eq = '=';
-		const static char tok_ws = ' ';
-		const static char tok_lt = '<';
-		const static char tok_gt = '>';
-		const static string tok_q = "==";
-		const static string tok_nq = "!=";
-		const static string tok_qlt = "=<";
-		const static string tok_qgt = "=>";
+	const static char tok_openCrlyBracket = '{';
+	const static char tok_closeCrlyBracket = '}';
+	const static char tok_openBracket = '(';
+	const static char tok_closeBracket = ')';
+	const static char tok_semicolon = ';';
+	const static char tok_eq = '=';
+	const static char tok_ws = ' ';
+	const static char tok_lt = '<';
+	const static char tok_gt = '>';
+	const static string tok_q = "==";
+	const static string tok_nq = "!=";
+	const static string tok_qlt = "=<";
+	const static string tok_qgt = "=>";
+
+	const static string tok_omp = "omp";
+	const static string tok_omp_target = "target";
+	const static string tok_omp_device = "device";
+	const static string tok_omp_env = "acc/cuda";
+	const static string tok_omp_copyin = "copy_in";
+	const static string tok_omp_copyout = "copy_out";
+	const static string tok_omp_copyinout = "copy_inout";
+
 }
 
 #endif /* ACCTOKENS_HXX_ */

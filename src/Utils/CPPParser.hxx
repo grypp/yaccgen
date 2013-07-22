@@ -50,7 +50,7 @@ namespace yaccgen {
 				if (tmp2.str().size() != 0) {
 					i++;
 					break;
-				}else continue;
+				} else continue;
 			}
 			tmp2 << line[i];
 		}
@@ -61,7 +61,7 @@ namespace yaccgen {
 
 		if (tmp3.str().size() != 0) items.init_params[tmp2.str()][tmp1.str()] = tmp3.str();
 		else items.init_params[tmp1.str()]["int"] = tmp2.str();
-
+		//cout << " for: " << tmp1.str() << " " << tmp2.str() << " " << tmp3.str() << endl;
 		tmp1.str("");
 		tmp2.str("");
 		tmp3.str("");
@@ -86,7 +86,7 @@ namespace yaccgen {
 		tmp1.str("");
 		tmp2.str("");
 		tmp3.str("");
-		i++;
+
 		for (i++; line[i] != yaccgen::tok_closeBracket; i++)
 			if (line[i] == yaccgen::tok_ws) continue;
 			else tmp1 << line[i];
@@ -96,6 +96,25 @@ namespace yaccgen {
 		replaceAll(items.acc_param, "--", "");
 		items.iteration_acc = tmp1.str();
 		return items;
+	}
+
+	static __inline__ void getInsideBrackets(fstream &fin, stringstream &ss) {
+
+		string line;
+		std::getline(fin, line);
+		ss << line << endl;
+		std::getline(fin, line);
+		ss << line << endl;
+		if (line.find("{", 0) != std::string::npos) {
+			int bracketCnt = 1;
+			while (bracketCnt != 0) {
+				std::getline(fin, line);
+				ss << line << endl;
+				if (line.find("{", 0) != std::string::npos) bracketCnt++;
+				else if (line.find("}", 0) != std::string::npos) bracketCnt--;
+			}
+		}
+
 	}
 }
 

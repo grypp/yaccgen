@@ -7,10 +7,11 @@
 //============================================================================
 
 #include <iostream>
-#include "codegen/CudaGen.hxx"
+#include "Yas/yas_ompss.hxx"
+#include "Utils/YACCGenUtils.hxx"
 using namespace std;
 using namespace yaccgen;
-using namespace codegen;
+//using namespace codegen;
 
 //============================================================================
 #define VERSION 0.1
@@ -27,7 +28,7 @@ using namespace codegen;
 "\n"
 //============================================================================
 
-char *input, *output, *output_temp = "accp_tmp.c", *input_2;
+char *input, *output;
 
 bool removeFile = true;
 string CPPFLAGS;
@@ -61,16 +62,15 @@ void cl_parse(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
-	std::string line;
-	stringstream ss;
-	fstream finx("pragma.txt");
-	while (!finx.eof()) {
-		std::getline(finx, line);
-		ss << line << endl;
-	}
-	CudaGen sulo;
-	YAS_CudaKernel kernel = sulo.YAS_identifier(ss);
+	yaccgen::timing_t timing_global;
+	yaccgen::timing_start(&timing_global);
 
-	return 1;
+	//cl_parse(argc, argv);
+
+	yas::YAS_OmpSs_Init("test", "out.x", false);
+
+	yaccgen::timing_end(&timing_global);
+	cout << endl << "Elapsed Time \t" << yaccgen::timing_elapsed(&timing_global) << endl;
+	return 0;
 }
 
