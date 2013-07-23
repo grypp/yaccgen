@@ -15,6 +15,7 @@ namespace yaccgen {
 
 	const static string tok_pragma = "#pragma";
 	const static string tok_acc = "acc";
+	const static string tok_acc_data = "data";
 	const static string tok_acc_parallel = "parallel";
 	const static string tok_acc_kernels = "kernels";
 	const static string tok_acc_reduction = "reduction";

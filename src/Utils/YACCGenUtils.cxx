@@ -5,48 +5,9 @@
  *      Author: grypp
  */
 
-
 #include "YACCGenUtils.hxx"
 
 namespace yaccgen {
-
-	void replaceAll(std::string& str, const std::string& from, const std::string& to) {
-		if (from.empty()) return;
-		std::size_t start_pos = 0;
-		while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
-			str.replace(start_pos, from.length(), to);
-			start_pos += to.length();
-		}
-	}
-
-	void eraseStringinString(string& str, const string& erased) {
-		int tmpBracketCounter = 1, end = 0;
-		if (str.find(erased, 0) != std::string::npos) {
-			for (int k = str.find(erased, 0) + erased.size() + 1; k != str.size(); k++) {
-				if (tmpBracketCounter == 0) break;
-				if (str[k] == '(') tmpBracketCounter++;
-				else if (str[k] == ')') tmpBracketCounter--;
-				else end++;
-			}
-			end += erased.size() + 3;
-			str.erase(str.find(erased, 0), end);
-		}
-	}
-
-	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-		std::stringstream ss(s);
-		std::string item;
-		while (std::getline(ss, item, delim)) {
-			elems.push_back(item);
-		}
-		return elems;
-	}
-
-	std::vector<std::string> split(const std::string &s, char delim) {
-		std::vector<std::string> elems;
-		split(s, delim, elems);
-		return elems;
-	}
 
 	void timing_start(timing_t* t) {
 		memset(t, 0, sizeof(*t));
@@ -109,5 +70,4 @@ namespace yaccgen {
 		return 0;
 	}
 }
-
 

@@ -8,6 +8,7 @@
 #ifndef YACCGenEXCEPTION_HXX_
 #define YACCGenEXCEPTION_HXX_
 
+#include <exception>
 #include <stdexcept>
 
 namespace yaccgen {

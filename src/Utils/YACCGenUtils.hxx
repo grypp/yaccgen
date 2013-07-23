@@ -1,3 +1,5 @@
+#define _OPENACC_
+
 #ifndef YACCGENUTILS_HXX_
 #define YACCGENUTILS_HXX_
 
@@ -12,9 +14,11 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include <typeinfo>
 
 #include "YACCGenLog.hxx"
 #include "YACCGenException.hxx"
+#include "YACCGenStrParser.hxx"
 
 using namespace std;
 
@@ -41,67 +45,12 @@ namespace yaccgen {
 	void timing_start(timing_t* t);
 	void timing_end(timing_t* t);
 	double timing_elapsed(const timing_t* t);
-	void replaceAll(std::string& str, const std::string& from, const std::string& to);
-	std::vector<std::string> split(const std::string &s, char delim);
-	std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
+
 	char copy_file(const char* source, const char* dest);
 
-	static __inline__ bool searchLineInArray(const string arr[], int n, string line) {
-		//todo change with startwith function. firstly use trim
-		for (int i = 0; i < n; ++i)
-			if (line.find(arr[i], 0) != std::string::npos) return true;
-		return false;
-	}
-
-	static __inline__ std::string getString_vec(std::vector<string> vec, string delimiter) {
-		stringstream ss;
-		for (int var = 0; var < vec.size(); ++var)
-			ss << vec[var] << delimiter;
-		return ss.str().substr(0, ss.str().size() - 1);
-	}
-
-	static __inline__ std::string getString_vec_ff(std::vector<string> vec, string delimiter) {
-		stringstream ss;
-		vector<string> tmp;
-		for (int var = 0; var < vec.size(); ++var) {
-			tmp = split(vec[var], ' ');
-			ss << tmp[tmp.size() - 1] << delimiter;
-		}
-		return ss.str().substr(0, ss.str().size() - 1);
-	}
-
-	static __inline__ std::string getString_vec(std::vector<string> vec) {
-		return getString_vec(vec, "");
-	}
-
-	// trim from start
-	static __inline__ std::string &ltrim(std::string &s) {
-		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-		return s;
-	}
-
-	// trim from end
-	static __inline__ std::string &rtrim(std::string &s) {
-		s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-		return s;
-	}
-
-	// trim from both ends
-	static __inline__ std::string &trim(std::string &s) {
-		return ltrim(rtrim(s));
-	}
-
-	static __inline__ std::string intToString(int val) {
-		std::ostringstream s;
-		s << val;
-		return s.str();
-	}
-
-	static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-	static const int stringLength = sizeof(alphanum) - 1;
-
 	static __inline__ string gen_str(int len) {
+		static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		static const int stringLength = sizeof(alphanum) - 1;
 		srand(time(NULL));
 		char *str = (char*) calloc(len + 1, sizeof(char));
 		for (int i = 0; i < len; i++)
@@ -109,10 +58,25 @@ namespace yaccgen {
 		return str;
 	}
 
-	static __inline__ const string mergePath(string path, string fname) {
-		path += '/';
-		path += fname;
-		return path;
+	template<class TYPE>
+	static __inline__ string getClassName(TYPE obj){
+		return typeid(TYPE).name();
+	}
+	static __inline__ string mergePath(string path, string fname) {
+		string out(path);
+		out += '/';
+		out += fname;
+		return out;
+	}
+
+	static __inline__ const char* get_extension_filename(const char* filename) {
+		return strrchr(filename, '.');
+	}
+
+	static __inline__ void upd_extension_filename(const char* fname, string newext) {
+		string ff(fname);
+		replaceAll(ff, string(get_extension_filename(fname)), newext);
+		fname = ff.c_str();
 	}
 
 #ifndef _WIN32_

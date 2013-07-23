@@ -17,11 +17,14 @@ using namespace std;
 
 namespace yaccgen {
 
+	void YACCGenLog_write_Debug(string log);
+
 	void YACCGenLog_write_Info(string log);
 
 	void YACCGenLog_write_Error(string log);
 
 	class YACCGenLog {
+
 	public:
 		YACCGenLog();
 

@@ -11,6 +11,7 @@
 #include <iostream>
 #include <sstream>
 #include "CUDAFunctions.hxx"
+#include "../Utils/CPPParser.hxx"
 
 namespace yaccgen {
 	namespace codegen {
@@ -19,30 +20,28 @@ namespace yaccgen {
 			string sizeX;
 			string sizeY;
 			string sizeZ;
-
 			string blockX;
 			string blockY;
-
 			string dynamicMemSize;
-
 		} CUDAKernel;
 
 		class YAS_CudaKernel {
 
 		public:
-			string _funcName;
-
-			string _codeBody;
-
-			//ParameterTable _params;
-
-			CUDAKernel _kernelConf;
+			string funcName;
+			string codeBody;
+			ParameterTable params;
+			CUDAKernel kernelConf;
 
 			YAS_CudaKernel();
 
 			~YAS_CudaKernel();
 
 			string toString_kernelConf();
+
+			string get_Cfunction();
+
+			string get_CSignature();
 		};
 	}
 }

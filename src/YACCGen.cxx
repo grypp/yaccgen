@@ -7,7 +7,7 @@
 //============================================================================
 
 #include <iostream>
-#include "Yas/yas_ompss.hxx"
+#include "Yas/YAS_OMPSS.hxx"
 #include "Utils/YACCGenUtils.hxx"
 using namespace std;
 using namespace yaccgen;

@@ -5,23 +5,23 @@
  *      Author: grypp
  */
 
-#include "CudaGen.hxx"
+#include "YAS_CudaGen.hxx"
 
 namespace yaccgen {
 	namespace codegen {
 
-		CudaGen::CudaGen() {
+		YAS_CudaGen::YAS_CudaGen() {
 		}
 
-		CudaGen::~CudaGen() {
+		YAS_CudaGen::~YAS_CudaGen() {
 
 		}
 
-		CUDAKernel CudaGen::YAS_gen_kernel() {
+		CUDAKernel YAS_CudaGen::YAS_gen_kernel() {
 			return YAS_gen_kernel(1, 1, 1, 1, 1, 0);
 		}
 
-		CUDAKernel CudaGen::YAS_gen_kernel(int blkx, int blky, int thrdx, int thrdy, int thrdz, int dynm) {
+		CUDAKernel YAS_CudaGen::YAS_gen_kernel(int blkx, int blky, int thrdx, int thrdy, int thrdz, int dynm) {
 			string log = "kernel is configured with Block[";
 			log += blkx;
 			log += " , ";
@@ -44,7 +44,7 @@ namespace yaccgen {
 			return _kernel;
 		}
 
-		void CudaGen::YAS_gridfy_1d(stringstream &ss, YAS_CudaKernel &currentKernel) {
+		void YAS_CudaGen::YAS_gridfy_1d(stringstream &ss, YAS_CudaKernel &currentKernel) {
 			stringstream output, tmp1, tmp2, tmp3;
 			string line;
 			std::getline(ss, line);
@@ -58,20 +58,20 @@ namespace yaccgen {
 			//cout << line << endl;
 			replaceAll(line, items.acc_param, acc_val);
 			output << line << endl;
-			currentKernel._codeBody = output.str();
+			currentKernel.codeBody = output.str();
 		}
 
-		vector<YAS_CudaKernel> CudaGen::YAS_identifier(stringstream &ss) {
+		vector<YAS_CudaKernel> YAS_CudaGen::YAS_identifier(stringstream &ss) {
 			vector<YAS_CudaKernel> outkernels;
 
 			YAS_CudaKernel currentKernel;
-			currentKernel._funcName = YAS_gen_kernelName();
-			YACCGenLog_write_Info(currentKernel._funcName);
+			currentKernel.funcName = YAS_gen_kernelName();
+			YACCGenLog_write_Info(currentKernel.funcName);
 			string line;
 			while (!ss.eof()) {
 				std::getline(ss, line);
 				if (line.find(yaccgen::tok_pragma, 0) != std::string::npos) if (line.find(yaccgen::tok_acc, 0) != std::string::npos) if (line.find(yaccgen::tok_acc_parallel, 0) != std::string::npos) if (line.find(yaccgen::tok_acc_loop, 0) != std::string::npos) {
-					currentKernel._kernelConf = YAS_gen_kernel(16, 1, 1, 8, 1, 0);
+					currentKernel.kernelConf = YAS_gen_kernel(16, 1, 1, 8, 1, 0);
 					YAS_gridfy_1d(ss, currentKernel);
 				}
 			}
@@ -79,7 +79,7 @@ namespace yaccgen {
 			return outkernels;
 		}
 
-		string CudaGen::YAS_gen_kernelName() {
+		string YAS_CudaGen::YAS_gen_kernelName() {
 			return yaccgen::gen_str(5);
 		}
 

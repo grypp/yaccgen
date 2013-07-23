@@ -5,12 +5,12 @@
  *      Author: grypp
  */
 
-#ifndef CUDAGEN_HXX_
-#define CUDAGEN_HXX_
+#ifndef YASCUDAGEN_HXX_
+#define YASCUDAGEN_HXX_
 
 #include "../Utils/YACCGenUtils.hxx"
-#include "YAS_CudaKernel.hxx"
 #include "../Utils/CPPParser.hxx"
+#include "YAS_CudaKernel.hxx"
 #include "KernelFunctions.hxx"
 
 using namespace std;
@@ -19,12 +19,15 @@ namespace yaccgen {
 
 	namespace codegen {
 
-		class CudaGen {
+		class YAS_CudaGen {
 
 		public:
-			CudaGen();
-			~CudaGen();
+			YAS_CudaGen();
+
+			~YAS_CudaGen();
+
 			void YAS_gridfy_1d(stringstream &ss, YAS_CudaKernel &currentKernel);
+
 			vector<YAS_CudaKernel> YAS_identifier(stringstream &ss);
 
 		private:
