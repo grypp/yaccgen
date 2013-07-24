@@ -23,6 +23,9 @@
 using namespace std;
 
 namespace yaccgen {
+
+	typedef pair<string, string> ssPair;
+
 	enum DEVICE {
 		CUDA, OPENCL
 	};

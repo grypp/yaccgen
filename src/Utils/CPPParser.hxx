@@ -75,9 +75,16 @@ namespace yaccgen {
 					}
 			}
 		} catch (std::exception e) {
+			YACCGenLog_write_Error(string("Block Parser") + e.what());
 			throw e;
 		}
 		return outList;
+	}
+
+	static __inline__ vector<string> findBlock_inCode(stringstream &fin, string token) {
+		vector<string> tokenList;
+		tokenList.push_back(token);
+		return findBlock_inCode(fin, tokenList);
 	}
 
 	static __inline__ string add_param(string name, string type, string val) {

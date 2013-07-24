@@ -34,6 +34,8 @@ namespace yaccgen {
 
 		void write(string, string);
 
+		void error(string, string);
+
 	private:
 		ofstream _fout;
 	};

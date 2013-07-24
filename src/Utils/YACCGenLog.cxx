@@ -23,7 +23,7 @@ namespace yaccgen {
 	}
 
 	void YACCGenLog_write_Error(string log) {
-		logger.write("[ACCP][ERROR]", log);
+		logger.error("[ACCP][ERROR]", log);
 	}
 
 	YACCGenLog::YACCGenLog() {
@@ -41,6 +41,11 @@ namespace yaccgen {
 		cout << prefix << ": \t" << log << endl;
 	}
 
-}  // namespace accp
+	void YACCGenLog::error(string prefix, string log) {
+
+		cout << "\033[1;31m" << prefix << ": \t" << log << "\033[0m" << endl;
+	}
+
+} // namespace accp
 
 #endif /* ACCPLOG_CXX_ */

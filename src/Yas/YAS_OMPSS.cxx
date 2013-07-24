@@ -27,7 +27,7 @@ namespace yaccgen {
 			YAS_ACC mainGenarator(accFame.c_str(), _fnameOut, _removeFile);
 			mainGenarator.YAS_ACC_PerformYASSteps();
 
-			cout << getString_vec(mainGenarator._pragmaCodeBlocks, "\n") << endl;
+			//YACCGenLog_write_Debug(getString_vec(mainGenarator._pragmaCodeBlocks, "\n"));
 		}
 
 		void YAS_OMPSS::YAS_OmpSs_2ACC(const char* fnameOut) {

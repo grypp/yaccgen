@@ -30,12 +30,11 @@ namespace yaccgen {
 			const char* _fnameInWorking;
 			string _tmpDir;
 
-
+			vector<ssPair> _pragmaCodeBlocks;
 
 			bool _removeFiles = true;
 
 		public:
-			vector<string> _pragmaCodeBlocks;
 
 			YAS_ACC(const char *fnameIn, const char *fnameOut, bool removeFiles);
 
