@@ -65,8 +65,9 @@ int main(int argc, char* argv[]) {
 	yaccgen::timing_t timing_global;
 	yaccgen::timing_start(&timing_global);
 
-	//cl_parse(argc, argv);
-	yas::YAS_OMPSS ompssBooter("test", "out.x", false);
+	cl_parse(argc, argv);
+
+	yas::YAS_OMPSS ompssBooter(input, output, false);
 	ompssBooter.YAS_OmpSs_PerformYASSteps();
 
 	yaccgen::timing_end(&timing_global);

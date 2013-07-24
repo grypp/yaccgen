@@ -45,16 +45,29 @@ namespace yaccgen {
 					if (line.find(tokenList[i], 0) != std::string::npos) {
 
 						std::getline(fin, line);
-						tmp << line << endl;
-						if (line.find(tok_openCrlyBracket, 0) != std::string::npos || search_ArrayInLine(C_LeX, line)) {
+						trim(line);
+
+						if (line.find(tok_openCrlyBracket, 0) == 0 || search_ArrayInLine(C_LeX, line)) {
+
+							bool getLast = false;
+							if (line.find(tok_openCrlyBracket, 0) != 0) {
+								tmp << line << endl;
+								getLast = true;
+							}
+
 							int bracket = line.find(tok_openCrlyBracket, 0) != std::string::npos ? 1 : 0;
+
 							while (!fin.eof()) {
 								std::getline(fin, line);
-
+								trim(line);
+								if (line.find(tok_com_single, 0) == 0 || line.empty()) continue;
 								if (line.find(tok_openCrlyBracket, 0) != std::string::npos) bracket++;
 								if (line.find(tok_closeCrlyBracket, 0) != std::string::npos) bracket--;
-								tmp << line << endl;
-								if (bracket == 0) break;
+
+								if (bracket == 0) {
+									if (getLast) tmp << line << endl;
+									break;
+								} else tmp << line << endl;
 							}
 							outList.push_back(tmp.str());
 						} else outList.push_back(line);

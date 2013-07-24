@@ -59,7 +59,7 @@ namespace yaccgen {
 	}
 
 	template<class TYPE>
-	static __inline__ string getClassName(TYPE obj){
+	static __inline__ string getClassName(TYPE obj) {
 		return typeid(TYPE).name();
 	}
 	static __inline__ string mergePath(string path, string fname) {
@@ -81,6 +81,15 @@ namespace yaccgen {
 
 #ifndef _WIN32_
 #define ERROR_EXEC "ERROR"
+
+	static __inline__ bool is_file_exist(const char* name) {
+		if (FILE *file = fopen(name, "r")) {
+			fclose(file);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	static __inline__ std::string exec_system(const char* cmd) {
 		FILE* pipe = popen(cmd, "r");

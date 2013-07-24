@@ -39,6 +39,10 @@ namespace yaccgen {
 	const static string tok_qlt = "=<";
 	const static string tok_qgt = "=>";
 
+	const static string tok_com_single = "//";
+	const static string tok_com_startMul = "/*";
+	const static string tok_com_closeMul = "*/";
+
 	const static string tok_omp = "omp";
 	const static string tok_omp_target = "target";
 	const static string tok_omp_device = "device";
@@ -50,3 +54,4 @@ namespace yaccgen {
 }
 
 #endif /* ACCTOKENS_HXX_ */
+

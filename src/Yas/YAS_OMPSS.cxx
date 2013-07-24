@@ -14,6 +14,7 @@ namespace yaccgen {
 	namespace yas {
 
 		YAS_OMPSS::YAS_OMPSS(const char* fnameIn, const char* fnameOut, bool removeFile) {
+			if (!is_file_exist(fnameIn)) throw new yaccgen::YACCGenException(string("File not exist") + fnameIn);
 			_fnameIn = fnameIn;
 			_fnameOut = fnameOut;
 			_removeFile = removeFile;
@@ -26,7 +27,7 @@ namespace yaccgen {
 			YAS_ACC mainGenarator(accFame.c_str(), _fnameOut, _removeFile);
 			mainGenarator.YAS_ACC_PerformYASSteps();
 
-			cout << getString_vec(mainGenarator._pragmaCodeBlocks,"\n") << endl;
+			cout << getString_vec(mainGenarator._pragmaCodeBlocks, "\n") << endl;
 		}
 
 		void YAS_OMPSS::YAS_OmpSs_2ACC(const char* fnameOut) {
