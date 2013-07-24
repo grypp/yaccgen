@@ -31,6 +31,8 @@ namespace yaccgen {
 		string acc_param;
 	} ForItems;
 
+	static const string C_LeX[5] = { "for", "if", "else", "while", "do" };
+
 	static __inline__ vector<string> findBlock_inCode(stringstream &fin, vector<string> tokenList) {
 		vector<string> outList;
 		string line;
@@ -41,19 +43,20 @@ namespace yaccgen {
 				std::getline(fin, line);
 				for (int i = 0; i != tokenList.size(); ++i)
 					if (line.find(tokenList[i], 0) != std::string::npos) {
-						std::getline(fin, line);
 
-						if (line.find(tok_openCrlyBracket, 0) != std::string::npos) {
-							int bracket = 1;
+						std::getline(fin, line);
+						tmp << line << endl;
+						if (line.find(tok_openCrlyBracket, 0) != std::string::npos || search_ArrayInLine(C_LeX, line)) {
+							int bracket = line.find(tok_openCrlyBracket, 0) != std::string::npos ? 1 : 0;
 							while (!fin.eof()) {
 								std::getline(fin, line);
+
 								if (line.find(tok_openCrlyBracket, 0) != std::string::npos) bracket++;
 								if (line.find(tok_closeCrlyBracket, 0) != std::string::npos) bracket--;
-								if (bracket == 0) break;
 								tmp << line << endl;
+								if (bracket == 0) break;
 							}
 							outList.push_back(tmp.str());
-
 						} else outList.push_back(line);
 
 					}

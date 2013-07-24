@@ -15,6 +15,23 @@ using namespace std;
 
 namespace yaccgen {
 
+	static __inline__ bool search_ArrayInLine(const string arr[], string line) {
+		for (int i = 0; i < arr->size(); ++i)
+			if (line.find(arr[i], 0) != std::string::npos) return true;
+		return false;
+	}
+
+	static __inline__ std::string getString_vec(std::vector<string> vec, string delimiter) {
+		stringstream ss;
+		for (int var = 0; var < vec.size(); ++var)
+			ss << vec[var] << delimiter;
+		return ss.str().substr(0, ss.str().size() - 1);
+	}
+
+	static __inline__ std::string getString_vec(std::vector<string> vec) {
+		return getString_vec(vec, " ");
+	}
+
 	static __inline__ std::string &ltrim(std::string &s) {
 		s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 		return s;

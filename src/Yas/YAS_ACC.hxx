@@ -10,12 +10,10 @@
 
 using namespace std;
 
-
 #include <fstream>
 #include <ostream>
 #include "../Utils/YACCGenUtils.hxx"
 #include "../Utils/CPPParser.hxx"
-
 
 namespace yaccgen {
 	namespace yas {
@@ -32,14 +30,22 @@ namespace yaccgen {
 			const char* _fnameInWorking;
 			string _tmpDir;
 
-			vector<string> _pragmaCodeBlocks;
+
+
+			bool _removeFiles = true;
 
 		public:
-			YAS_ACC(const char *fnameIn,const char *fnameOut);
+			vector<string> _pragmaCodeBlocks;
+
+			YAS_ACC(const char *fnameIn, const char *fnameOut, bool removeFiles);
 
 			~YAS_ACC();
 
-			void YAS_ACC_PerformAllSteps();
+			void YAS_ACC_PRE_PerformYASSteps();
+
+			void YAS_ACC_POST_PerformYASSteps();
+
+			void YAS_ACC_PerformYASSteps();
 
 			void YAS_Pre_Driver();
 

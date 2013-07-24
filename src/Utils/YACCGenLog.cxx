@@ -35,7 +35,6 @@ namespace yaccgen {
 
 	YACCGenLog::~YACCGenLog() {
 		if (_fout.is_open()) _fout.close();
-		delete this;
 	}
 
 	void YACCGenLog::write(string prefix, string log) {

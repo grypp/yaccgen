@@ -66,8 +66,8 @@ int main(int argc, char* argv[]) {
 	yaccgen::timing_start(&timing_global);
 
 	//cl_parse(argc, argv);
-
-	yas::YAS_OmpSs_Init("test", "out.x", false);
+	yas::YAS_OMPSS ompssBooter("test", "out.x", false);
+	ompssBooter.YAS_OmpSs_PerformYASSteps();
 
 	yaccgen::timing_end(&timing_global);
 	cout << endl << "Elapsed Time \t" << yaccgen::timing_elapsed(&timing_global) << endl;

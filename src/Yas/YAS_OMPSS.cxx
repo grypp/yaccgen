@@ -8,26 +8,29 @@
 #include "YAS_OMPSS.hxx"
 
 using namespace yaccgen;
-using namespace codegen;
 
 namespace yaccgen {
+
 	namespace yas {
 
-		void YAS_OmpSs_Init(const char* fnameIn, const char* fnameOut, bool removeFile) {
-			string newDir = string("yaccgen_") + yaccgen::gen_str(10);
-			exec_newdir(newDir);
-
-			string accFile = mergePath(newDir, string("acc_") + fnameIn);
-			string workingOrgFile = mergePath(newDir, fnameIn);
-			string yaccgenFile = mergePath(newDir, string("yaccgen_") + fnameIn);
-
-			YAS_OmpSs_2ACC(fnameIn, accFile.c_str(), removeFile);
-			copy_file(fnameIn, workingOrgFile.c_str());
-			YAS_GENKERNEL(accFile.c_str(), newDir.c_str(), removeFile);
+		YAS_OMPSS::YAS_OMPSS(const char* fnameIn, const char* fnameOut, bool removeFile) {
+			_fnameIn = fnameIn;
+			_fnameOut = fnameOut;
+			_removeFile = removeFile;
 		}
 
-		void YAS_OmpSs_2ACC(const char* fnameIn, const char* fnameOut, bool removeFile) {
-			fstream fin(fnameIn);
+		void YAS_OMPSS::YAS_OmpSs_PerformYASSteps() {
+			string accFame = string("acc_") + gen_str(10) + string(_fnameIn);
+			YAS_OmpSs_2ACC(accFame.c_str());
+
+			YAS_ACC mainGenarator(accFame.c_str(), _fnameOut, _removeFile);
+			mainGenarator.YAS_ACC_PerformYASSteps();
+
+			cout << getString_vec(mainGenarator._pragmaCodeBlocks,"\n") << endl;
+		}
+
+		void YAS_OMPSS::YAS_OmpSs_2ACC(const char* fnameOut) {
+			fstream fin(_fnameIn);
 			ofstream fout(fnameOut);
 			string line;
 
@@ -73,29 +76,9 @@ namespace yaccgen {
 			}
 			fout.close();
 			fin.close();
-			if (removeFile) remove(fnameOut);
+
+			if (_removeFile) remove(fnameOut);
 		}
 
-		void YAS_GENKERNEL(const char* fnameIn, const char* dir, bool removeFile) {
-		/*	YAS_CudaKernel currentKernel;
-			CudaGen cudaGenerator;
-			std::string line;
-			stringstream ss;
-			fstream fin(fnameIn);
-
-			if (!fin.good()) throw YACCGenCodegenException(string("File error :") + string(fnameIn));
-
-			while (!fin.eof()) {
-				std::getline(fin, line);
-				if (line.find(yaccgen::tok_pragma, 0) != std::string::npos) {
-					ss << line << endl;
-					getInsideBrackets(fin, ss);
-					vector<YAS_CudaKernel> kernels = cudaGenerator.YAS_identifier(ss);
-
-				}
-			}
-
-			fin.close();*/
-		}
 	}
 }

@@ -9,17 +9,29 @@
 #define YAS_OMPSS_HXX_
 
 #include "../Utils/YACCGenUtils.hxx"
-#include "../codegen/YAS_CudaKernel.hxx"
+#include "YAS_ACC.hxx"
 
 namespace yaccgen {
 	namespace yas {
 
-		void YAS_OmpSs_Init(const char* fnameIn, const char* fnameOut, bool removeFile);
+		class YAS_OMPSS {
 
-		void YAS_GENKERNEL(const char* fnameIn, const char* dir, bool removeFile);
+		private:
+			const char* _fnameIn;
+			const char* _fnameOut;
+			bool _removeFile;
 
-		void YAS_OmpSs_2ACC(const char* fnameIn, const char* fnameOut, bool removeFile);
+		public:
+
+			YAS_OMPSS(const char* fnameIn, const char* fnameOut, bool removeFile);
+
+			void YAS_OmpSs_2ACC(const char* fnameOut);
+
+			void YAS_OmpSs_PerformYASSteps();
+
+		};
 	}
 }
 
 #endif /* YAS_OMPSS_HXX_ */
+

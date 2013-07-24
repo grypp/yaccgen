@@ -11,9 +11,10 @@ namespace yaccgen {
 
 	namespace yas {
 
-		YAS_ACC::YAS_ACC(const char *fnameIn, const char *fnameOut) {
+		YAS_ACC::YAS_ACC(const char *fnameIn, const char *fnameOut, bool removeFiles) {
 			_fnameIn = fnameIn;
 			_fnameOut = fnameOut;
+			_removeFiles = removeFiles;
 		}
 
 		YAS_ACC::~YAS_ACC() {
@@ -22,12 +23,24 @@ namespace yaccgen {
 			_finSS.str("");
 		}
 
-		void YAS_ACC::YAS_ACC_PerformAllSteps() {
-			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps are started."));
+		void YAS_ACC::YAS_ACC_PRE_PerformYASSteps() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : PRE Compiling Steps are started."));
+
 			try {
-
 				YAS_Pre_Driver();
+			} catch (YACCGenException e) {
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
 
+			YACCGenLog_write_Debug(getClassName(this) + string(" : PRE Compiling Steps finished."));
+		}
+
+		void YAS_ACC::YAS_ACC_POST_PerformYASSteps() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : POST Compiling Steps are started."));
+
+			try {
 				YAS_CheckPragmas();
 
 				YAS_DepedencyIdentifier();
@@ -37,8 +50,27 @@ namespace yaccgen {
 				YAS_Post_Driver();
 
 			} catch (YACCGenException e) {
-			} //catch (YACCGenException e) {
-			  //}
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
+
+			YACCGenLog_write_Debug(getClassName(this) + string(" : POST Compiling Steps finished."));
+		}
+
+		void YAS_ACC::YAS_ACC_PerformYASSteps() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps are started."));
+			try {
+
+				YAS_ACC_PRE_PerformYASSteps();
+
+				YAS_ACC_POST_PerformYASSteps();
+
+			} catch (YACCGenException e) {
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
 			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps finished."));
 		}
 
@@ -46,6 +78,8 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Pre_Driver are started."));
 
 			this->_tmpDir = string("yaccgen_") + yaccgen::gen_str(10);
+			exec_newdir(_tmpDir);
+
 			this->_fnameInWorking = mergePath(_tmpDir, string("yaccgen_") + _fnameIn).c_str();
 			copy_file(_fnameIn, _fnameInWorking);
 			_fin.open(_fnameInWorking);
