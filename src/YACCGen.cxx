@@ -2,7 +2,7 @@
 // Name        : YACCGen.cxx
 // Author      : guray ozen
 // Version     : 0.1
-// Copyright   : yet another openacc generator
+// Copyright   : yet another ACC generator
 // Description : Main in C++, Ansi-style
 //============================================================================
 
@@ -11,10 +11,10 @@
 #include "Utils/YACCGenUtils.hxx"
 using namespace std;
 using namespace yaccgen;
-//using namespace codegen;
 
 //============================================================================
 #define VERSION 0.1
+
 //============================================================================
 #define HELP_STRING \
 "Default usage: accp inputfile.cpp -o output.x \n" \

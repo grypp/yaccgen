@@ -35,10 +35,10 @@ namespace yaccgen {
 
 	static __inline__ vector<string> findBlock_inCode(stringstream &fin, vector<string> tokenList) {
 		vector<string> outList;
-		string line;
+		string line = "";
 		stringstream tmp;
+		outList.clear();
 		try {
-
 			while (!fin.eof()) {
 				std::getline(fin, line);
 				for (int i = 0; i != tokenList.size(); ++i)
@@ -70,6 +70,7 @@ namespace yaccgen {
 								} else tmp << line << endl;
 							}
 							outList.push_back(tmp.str());
+							tmp.str("");
 						} else outList.push_back(line);
 
 					}

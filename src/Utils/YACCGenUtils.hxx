@@ -66,9 +66,11 @@ namespace yaccgen {
 		return typeid(TYPE).name();
 	}
 	static __inline__ string mergePath(string path, string fname) {
+
 		string out(path);
 		out += '/';
 		out += fname;
+
 		return out;
 	}
 

@@ -80,16 +80,19 @@ namespace yaccgen {
 			this->_tmpDir = string("yaccgen_") + yaccgen::gen_str(10);
 			exec_newdir(_tmpDir);
 
-			this->_fnameInWorking = mergePath(_tmpDir, string("yaccgen_") + _fnameIn).c_str();
+			string workingFile = mergePath(_tmpDir, string("yaccgen_") + _fnameIn);
+			this->_fnameInWorking = workingFile.c_str();
+
 			copy_file(_fnameIn, _fnameInWorking);
 			_fin.open(_fnameInWorking);
+
+			if (!_fin.is_open()) throw YACCGenCodegenException(getClassName(this) + string(" File can't be opened"));
 
 			string line;
 			while (!_fin.eof()) {
 				std::getline(_fin, line);
 				_finSS << line << endl;
 			}
-
 			_fin.seekg(0, std::ios::beg);
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Pre_Driver finished."));
@@ -114,6 +117,9 @@ namespace yaccgen {
 				pair<string, string> np(tok_acc_data, items[var]);
 				this->_pragmaCodeBlocks.push_back(np);
 			}
+
+			/*for (uint var = 0; var < _pragmaCodeBlocks.size(); ++var)
+				YACCGenLog_write_Error(string(_pragmaCodeBlocks[var].first) + ": \n" + string(_pragmaCodeBlocks[var].second));*/
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_CheckPragmas finished."));
 		}
