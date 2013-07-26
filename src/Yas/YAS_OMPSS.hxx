@@ -14,12 +14,7 @@
 namespace yaccgen {
 	namespace yas {
 
-		class YAS_OMPSS {
-
-		private:
-			const char* _fnameIn;
-			const char* _fnameOut;
-			bool _removeFile;
+		class YAS_OMPSS: public YAS_ACC {
 
 		public:
 
@@ -27,7 +22,7 @@ namespace yaccgen {
 
 			void YAS_OmpSs_2ACC(const char* fnameOut);
 
-			void YAS_OmpSs_PerformYASSteps();
+			void YAS_ACC_PRE_PerformYASSteps();
 
 		};
 	}

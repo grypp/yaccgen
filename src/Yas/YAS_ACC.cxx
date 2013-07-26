@@ -12,6 +12,7 @@ namespace yaccgen {
 	namespace yas {
 
 		YAS_ACC::YAS_ACC(const char *fnameIn, const char *fnameOut, bool removeFiles) {
+			if (!is_file_exist(fnameIn)) throw new yaccgen::YACCGenException(string("File not exist") + fnameIn);
 			_fnameIn = fnameIn;
 			_fnameOut = fnameOut;
 			_removeFiles = removeFiles;
@@ -27,7 +28,11 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : PRE Compiling Steps are started."));
 
 			try {
+
+				YAS_Prepare();
+
 				YAS_Pre_Driver();
+
 			} catch (YACCGenException e) {
 				throw e;
 			} catch (std::exception e) {
@@ -74,17 +79,22 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps finished."));
 		}
 
-		void YAS_ACC::YAS_Pre_Driver() {
-			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Pre_Driver are started."));
+		void YAS_ACC::YAS_Prepare() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Prepare are started."));
 
 			this->_tmpDir = string("yaccgen_") + yaccgen::gen_str(10);
 			exec_newdir(_tmpDir);
 
 			string workingFile = mergePath(_tmpDir, string("yaccgen_") + _fnameIn);
 			this->_fnameInWorking = workingFile.c_str();
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Prepare finished."));
+		}
 
-			copy_file(_fnameIn, _fnameInWorking);
-			_fin.open(_fnameInWorking);
+		void YAS_ACC::YAS_Pre_Driver() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Pre_Driver are started."));
+
+			copy_file(_fnameIn.c_str(), _fnameInWorking.c_str());
+			_fin.open(_fnameInWorking.c_str());
 
 			if (!_fin.is_open()) throw YACCGenCodegenException(getClassName(this) + string(" File can't be opened"));
 
@@ -119,7 +129,7 @@ namespace yaccgen {
 			}
 
 			/*for (uint var = 0; var < _pragmaCodeBlocks.size(); ++var)
-				YACCGenLog_write_Error(string(_pragmaCodeBlocks[var].first) + ": \n" + string(_pragmaCodeBlocks[var].second));*/
+			 YACCGenLog_write_Error(string(_pragmaCodeBlocks[var].first) + ": \n" + string(_pragmaCodeBlocks[var].second));*/
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_CheckPragmas finished."));
 		}

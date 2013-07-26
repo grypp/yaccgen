@@ -15,7 +15,7 @@ namespace yaccgen {
 	static YACCGenLog logger;
 
 	void YACCGenLog_write_Debug(string log) {
-		logger.write("[ACCP][DEBUG]", log);
+		//logger.write("[ACCP][DEBUG]", log);
 	}
 
 	void YACCGenLog_write_Info(string log) {

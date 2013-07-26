@@ -1,4 +1,5 @@
 /*
+
  * cudagen.cxx
  *
  *  Created on: Jul 18, 2013
@@ -22,17 +23,9 @@ namespace yaccgen {
 		}
 
 		CUDAKernel YAS_CudaGen::YAS_gen_kernel(int blkx, int blky, int thrdx, int thrdy, int thrdz, int dynm) {
-			string log = "kernel is configured with Block[";
-			log += blkx;
-			log += " , ";
-			log += blky;
-			log += "]";
-			log += thrdx;
-			log += " , ";
-			log += thrdy;
-			log += " , ";
-			log += thrdz + "]";
-			//yaccgen::ACCPLog_write_Info(log);
+			yaccgen::YACCGenLog_write_Info(string("kernel is configured with Block[") \
+					+ intToString(blkx) + string(" , ") + intToString(blky) + string("] [")\
+					+ intToString(thrdx) + string(" , ") + intToString(thrdy) + string(" , ") + intToString(thrdz) + string("]"));
 
 			CUDAKernel _kernel;
 			_kernel.blockX = intToString(blkx);
@@ -44,6 +37,11 @@ namespace yaccgen {
 			return _kernel;
 		}
 
+		void YAS_CudaGen::add_method(string name, ParameterTable params){
+			YAS_CGen::add_method("__global__ void",name,params);
+		}
+
+#if old
 		void YAS_CudaGen::YAS_gridfy_1d(stringstream &ss, YAS_CudaKernel &currentKernel) {
 			stringstream output, tmp1, tmp2, tmp3;
 			string line;
@@ -82,7 +80,7 @@ namespace yaccgen {
 		string YAS_CudaGen::YAS_gen_kernelName() {
 			return yaccgen::gen_str(5);
 		}
+#endif
 
 	}
 }
-

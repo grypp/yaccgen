@@ -21,7 +21,7 @@ namespace yaccgen {
 		string name;
 	} yaccgen_param;
 
-	typedef std::list<yaccgen_param> ParameterTable;
+	typedef std::vector<yaccgen_param> ParameterTable;
 
 	typedef struct {
 		ParameterTable init_params;
@@ -86,17 +86,6 @@ namespace yaccgen {
 		vector<string> tokenList;
 		tokenList.push_back(token);
 		return findBlock_inCode(fin, tokenList);
-	}
-
-	static __inline__ string add_param(string name, string type, string val) {
-		stringstream ss;
-		if (val.empty()) ss << type << yaccgen::tok_ws << name << yaccgen::tok_eq << val << yaccgen::tok_semicolon << '\n';
-		else ss << type << yaccgen::tok_ws << name << yaccgen::tok_semicolon << '\n';
-		return ss.str();
-	}
-
-	static __inline__ string add_param(string name, string type) {
-		return add_param(name, type, "");
 	}
 
 	static __inline__ ForItems analyze_for(string line) {

@@ -13,25 +13,32 @@ namespace yaccgen {
 
 	namespace yas {
 
-		YAS_OMPSS::YAS_OMPSS(const char* fnameIn, const char* fnameOut, bool removeFile) {
-			if (!is_file_exist(fnameIn)) throw new yaccgen::YACCGenException(string("File not exist") + fnameIn);
-			_fnameIn = fnameIn;
-			_fnameOut = fnameOut;
-			_removeFile = removeFile;
+		YAS_OMPSS::YAS_OMPSS(const char* fnameIn, const char* fnameOut, bool removeFile) :
+				YAS_ACC(fnameIn, fnameOut, removeFile) {
+
 		}
 
-		void YAS_OMPSS::YAS_OmpSs_PerformYASSteps() {
-			string accFame = string("acc_") + gen_str(10) + string(_fnameIn);
-			YAS_OmpSs_2ACC(accFame.c_str());
+		void YAS_OMPSS::YAS_ACC_PRE_PerformYASSteps() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps are started."));
+			try {
+				YAS_ACC::YAS_Prepare();
 
-			YAS_ACC mainGenarator(accFame.c_str(), _fnameOut, _removeFile);
-			mainGenarator.YAS_ACC_PerformYASSteps();
+				string accFname = string("acc_") + gen_str(10) + string(_fnameIn);
+				YAS_OmpSs_2ACC(mergePath(this->_tmpDir, accFname).c_str());
+				this->_fnameIn = mergePath(this->_tmpDir, accFname);
 
-			//YACCGenLog_write_Debug(getString_vec(mainGenarator._pragmaCodeBlocks, "\n"));
+				YAS_ACC::YAS_Pre_Driver();
+
+			} catch (YACCGenException e) {
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
+			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps are started."));
 		}
 
 		void YAS_OMPSS::YAS_OmpSs_2ACC(const char* fnameOut) {
-			fstream fin(_fnameIn);
+			fstream fin(_fnameIn.c_str());
 			ofstream fout(fnameOut);
 			string line;
 
@@ -78,7 +85,7 @@ namespace yaccgen {
 			fout.close();
 			fin.close();
 
-			if (_removeFile) remove(fnameOut);
+			//if (this->_removeFiles) remove(fnameOut);
 		}
 
 	}

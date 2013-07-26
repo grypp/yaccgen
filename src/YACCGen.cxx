@@ -62,12 +62,26 @@ void cl_parse(int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
+
+	int n = 1024;
+	int blockIdx = 1;
+	__int32_t nbiter_1;
+	__int32_t firstiter_1;
+	__int32_t lastiter_1;
+	nbiter_1 = 1 + (n - 1) / 16;                          //64
+	firstiter_1 = (blockIdx) * nbiter_1;            //block by block computing 2.step = 64
+	lastiter_1 = ((firstiter_1 + nbiter_1 - 1) < (n - 1) ? (firstiter_1 + nbiter_1 - 1) : (n - 1));
+	cout << nbiter_1 << endl;
+	cout << firstiter_1 << endl;
+	cout << lastiter_1 << endl;
+	return 1;
+
 	yaccgen::timing_t timing_global;
 	yaccgen::timing_start(&timing_global);
 
 	cl_parse(argc, argv);
 	yas::YAS_OMPSS ompssBooter(input, output, false);
-	ompssBooter.YAS_OmpSs_PerformYASSteps();
+	ompssBooter.YAS_ACC_PerformYASSteps();
 
 	yaccgen::timing_end(&timing_global);
 	cout << endl << "Elapsed Time \t" << yaccgen::timing_elapsed(&timing_global) << endl;

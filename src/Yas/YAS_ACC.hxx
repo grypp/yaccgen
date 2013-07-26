@@ -21,16 +21,17 @@ namespace yaccgen {
 		class YAS_ACC {
 
 		private:
+			vector<ssPair> _pragmaCodeBlocks;
+
+		protected:
 			fstream _fin;
 			stringstream _finSS;
 			fstream _fout;
 
-			const char* _fnameIn;
-			const char* _fnameOut;
-			const char* _fnameInWorking;
+			string _fnameIn;
+			string _fnameOut;
+			string _fnameInWorking;
 			string _tmpDir;
-
-			vector<ssPair> _pragmaCodeBlocks;
 
 			bool _removeFiles = true;
 
@@ -38,23 +39,25 @@ namespace yaccgen {
 
 			YAS_ACC(const char *fnameIn, const char *fnameOut, bool removeFiles);
 
-			~YAS_ACC();
+			virtual ~YAS_ACC();
 
-			void YAS_ACC_PRE_PerformYASSteps();
+			virtual void YAS_ACC_PRE_PerformYASSteps();
 
-			void YAS_ACC_POST_PerformYASSteps();
+			virtual void YAS_ACC_POST_PerformYASSteps();
 
-			void YAS_ACC_PerformYASSteps();
+			virtual void YAS_ACC_PerformYASSteps();
 
-			void YAS_Pre_Driver();
+			virtual void YAS_Prepare();
 
-			void YAS_CheckPragmas();
+			virtual void YAS_Pre_Driver();
 
-			void YAS_DepedencyIdentifier();
+			virtual void YAS_CheckPragmas();
 
-			void YAS_Parallelizer();
+			virtual void YAS_DepedencyIdentifier();
 
-			void YAS_Post_Driver();
+			virtual void YAS_Parallelizer();
+
+			virtual void YAS_Post_Driver();
 		};
 	}
 }
