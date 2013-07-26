@@ -10,10 +10,12 @@
 
 using namespace std;
 
+
 #include <fstream>
 #include <ostream>
 #include "../Utils/YACCGenUtils.hxx"
 #include "../Utils/CPPParser.hxx"
+#include "YAS_ParserWrapper.hxx"
 
 namespace yaccgen {
 	namespace yas {
@@ -34,6 +36,8 @@ namespace yaccgen {
 			string _tmpDir;
 
 			bool _removeFiles = true;
+
+			YAS_ParserWrapper* parser;
 
 		public:
 

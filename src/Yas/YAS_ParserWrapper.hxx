@@ -13,24 +13,32 @@
 #include "../Utils/YACCGenUtils.hxx"
 #include "../parser/ctool.h"
 #include "../parser/PrintTraversal.h"
+#include "../codegen/YAS_CudaGen.hxx"
+
+using namespace yaccgen;
+using namespace codegen;
 
 namespace yaccgen {
 	namespace yas {
 
-		class YAS_Parser_Wrapper {
+		class YAS_ParserWrapper {
 		private:
-			Project *prj;
-			TransUnit *unit;
+			Project *_prj;
+			TransUnit *_unit;
+			vector<ForStemnt*> _forList;
+			YAS_CudaGen *_cudaGenerator;
+
 		public:
 
-			YAS_Parser_Wrapper(const char* fList, bool use_cpp, bool isDebug);
+			YAS_ParserWrapper(const char* fname, bool use_cpp, bool isDebug);
 
-			virtual ~YAS_Parser_Wrapper();
+			virtual ~YAS_ParserWrapper();
 
-			vector<string> get_Statement_For();
+			void findout_acc_pragma();
 
-			vector<string> get_Statement_ACCPragma();
+			void parallel();
 		}
 		;
 	}
+}
 #endif /* YASPARSERWRAPPER_H_ */

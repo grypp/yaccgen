@@ -29,13 +29,16 @@ namespace yaccgen {
 
 			void add_method(string name, ParameterTable params);
 
-		private:
-			string YAS_gen_kernelName();
+			void add_method(vector<string> params);
 
 			CUDAKernel YAS_gen_kernel();
 
 			CUDAKernel YAS_gen_kernel(int blkx, int blky, int thrdx, int thrdy, int thrdz, int dynm);
 
+			void YAS_gen_kernelName();
+
+		private:
+			string _name;
 		};
 	}
 }

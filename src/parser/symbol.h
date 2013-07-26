@@ -106,6 +106,8 @@ class SymEntry
 
     void    Show(std::ostream& out) const;
 
+    std::string Show() const;
+
   public:
     SymEntryType    type;    // what kind of entry this is.
     std::string     name;    // The name of the thing.

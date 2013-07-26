@@ -18,9 +18,10 @@ namespace yaccgen {
 		class YAS_CGen {
 
 		protected:
-			stringstream _codeBlock;
+
 
 		public:
+			stringstream _codeBlock;
 			YAS_CGen();
 
 			virtual ~YAS_CGen();

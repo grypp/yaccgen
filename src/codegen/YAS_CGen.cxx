@@ -36,7 +36,7 @@ namespace yaccgen {
 		}
 
 		void YAS_CGen::add_param(yaccgen_param param) {
-			if (param.val.empty()) this->_codeBlock << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_eq << param.val << yaccgen::tok_semicolon << '\n';
+			if (!param.val.empty()) this->_codeBlock << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_eq << param.val << yaccgen::tok_semicolon << '\n';
 			else this->_codeBlock << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_semicolon << '\n';
 		}
 
@@ -45,7 +45,7 @@ namespace yaccgen {
 		}
 
 		void YAS_CGen::add_closeBlock() {
-			this->_codeBlock << tok_openCrlyBracket << endl;
+			this->_codeBlock << tok_closeCrlyBracket << endl;
 		}
 
 		void YAS_CGen::add_line(string line) {

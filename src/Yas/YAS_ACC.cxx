@@ -112,21 +112,21 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_CheckPragmas are started."));
 
 			//3 main concepts
-			vector<string> items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_parallel);
-			for (uint var = 0; var < items.size(); ++var) {
-				pair<string, string> np(tok_acc_parallel, items[var]);
-				this->_pragmaCodeBlocks.push_back(np);
-			}
-			items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_kernels);
-			for (uint var = 0; var < items.size(); ++var) {
-				pair<string, string> np(tok_acc_kernels, items[var]);
-				this->_pragmaCodeBlocks.push_back(np);
-			}
-			items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_data);
-			for (uint var = 0; var < items.size(); ++var) {
-				pair<string, string> np(tok_acc_data, items[var]);
-				this->_pragmaCodeBlocks.push_back(np);
-			}
+			/*	vector<string> items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_parallel);
+			 for (uint var = 0; var < items.size(); ++var) {
+			 pair<string, string> np(tok_acc_parallel, items[var]);
+			 this->_pragmaCodeBlocks.push_back(np);
+			 }
+			 items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_kernels);
+			 for (uint var = 0; var < items.size(); ++var) {
+			 pair<string, string> np(tok_acc_kernels, items[var]);
+			 this->_pragmaCodeBlocks.push_back(np);
+			 }
+			 items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_data);
+			 for (uint var = 0; var < items.size(); ++var) {
+			 pair<string, string> np(tok_acc_data, items[var]);
+			 this->_pragmaCodeBlocks.push_back(np);
+			 }*/
 
 			/*for (uint var = 0; var < _pragmaCodeBlocks.size(); ++var)
 			 YACCGenLog_write_Error(string(_pragmaCodeBlocks[var].first) + ": \n" + string(_pragmaCodeBlocks[var].second));*/
@@ -138,7 +138,15 @@ namespace yaccgen {
 		}
 
 		void YAS_ACC::YAS_Parallelizer() {
+
+			parser = new YAS_ParserWrapper(_fnameInWorking.c_str(), false, false);
+			parser->findout_acc_pragma();
+			parser->parallel();
+
 		}
+
+
+
 
 		void YAS_ACC::YAS_Post_Driver() {
 		}
