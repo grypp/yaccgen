@@ -88,7 +88,7 @@ namespace yaccgen {
 		return findBlock_inCode(fin, tokenList);
 	}
 
-	static __inline__ ForItems analyze_for(string line) {
+	/*static __inline__ ForItems analyze_for(string line) {
 		ForItems items;
 		stringstream output, tmp1, tmp2, tmp3;
 
@@ -139,7 +139,7 @@ namespace yaccgen {
 		tmp2.str("");
 		tmp3.str("");
 
-		for (i++; line[i] != yaccgen::tok_closeBracket; i++)
+		for (i++; line[i] != yaccgen::tok_closeBracket.c_str(); i++)
 			if (line[i] == yaccgen::tok_ws) continue;
 			else tmp1 << line[i];
 
@@ -148,7 +148,7 @@ namespace yaccgen {
 		replaceAll(items.acc_param, "--", "");
 		items.iteration_acc = tmp1.str();
 		return items;
-	}
+	}*/
 
 	static __inline__ void getInsideBrackets(fstream &fin, stringstream &ss) {
 

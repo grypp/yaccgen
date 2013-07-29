@@ -36,19 +36,36 @@ namespace yaccgen {
 		}
 
 		void YAS_CGen::add_param(yaccgen_param param) {
-			if (!param.val.empty()) this->_codeBlock << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_eq << param.val << yaccgen::tok_semicolon << '\n';
-			else this->_codeBlock << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_semicolon << '\n';
+			stringstream ss;
+			if (!param.val.empty()) ss << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_eq << param.val << yaccgen::tok_semicolon;
+			else ss << param.type << yaccgen::tok_ws << param.name << yaccgen::tok_semicolon;
+			add_line(ss.str());
 		}
 
 		void YAS_CGen::add_openBlock() {
-			this->_codeBlock << tok_openCrlyBracket << endl;
+			add_line(tok_openCrlyBracket);
+			_level++;
 		}
 
 		void YAS_CGen::add_closeBlock() {
-			this->_codeBlock << tok_closeCrlyBracket << endl;
+			_level--;
+			add_line(tok_closeCrlyBracket);
+		}
+
+		void YAS_CGen::add_for(string assignment, string binary, string unary) {
+			string forstr;
+			forstr.reserve(100);
+			forstr.append(tok_for + tok_openBracket);
+			forstr.append(assignment + tok_semicolon);
+			forstr.append(binary + tok_semicolon);
+			forstr.append(unary);
+			forstr.append(tok_closeBracket);
+			add_line(forstr);
 		}
 
 		void YAS_CGen::add_line(string line) {
+			for (int var = 0; var < _level; ++var)
+				this->_codeBlock << "\t";
 			this->_codeBlock << line << endl;
 		}
 	}

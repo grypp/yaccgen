@@ -22,7 +22,12 @@ namespace yaccgen {
 			this->_unit->~TransUnit();
 		}
 
-		void YAS_ParserWrapper::findout_acc_pragma() {
+		void YAS_ParserWrapper::generate_ompss() {
+
+		}
+
+
+		void YAS_ParserWrapper::parse_accpragma() {
 			//todo only one main code!!
 			//todo only for
 			//todo only without block pragma!!
@@ -36,7 +41,7 @@ namespace yaccgen {
 				}
 			}
 		}
-		void YAS_ParserWrapper::parallel() {
+		void YAS_ParserWrapper::generate_cuda() {
 
 			KernelFunctions kernelfunction;
 			CUDAFunctions cudafunction;
@@ -53,8 +58,9 @@ namespace yaccgen {
 				_cudaGenerator->YAS_gen_kernelName();
 
 				loopVar = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->name;
+				//loopVar_Val = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->entry->Show();
 				params.push_back(((Variable*) ((RelExpr*) _forList[var]->init)->_leftExpr)->name->entry->Show());
-				YACCGenLog_write_Info(string("Loop ") + loopVar + string(" will be shared"));
+				YACCGenLog_write_Info(string("Loop ") + loopVar + string(" will be gridified"));
 
 				//todo check all condition variable
 				if (((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->name != ((Variable*) ((RelExpr*) _forList[var]->init)->_leftExpr)->name->name) {
@@ -78,16 +84,24 @@ namespace yaccgen {
 				_cudaGenerator->add_method(params);
 				_cudaGenerator->add_openBlock();
 
-				yaccgen_param _nblock { string(kernelfunction.int32()), "1+(n-1)/16", "_nblock" };
+				string firstVal = "0";
+				_cudaGenerator->add_line(string("if(") + firstVal + tok_lt + nblock + string("  )"));
+				_cudaGenerator->add_openBlock();
+
+				yaccgen_param _nblock { string(kernelfunction.int32()), string(cudafunction.gr_atidminx()), "_nblock" };
 				_cudaGenerator->add_param(_nblock);
 
-				yaccgen_param _startIter { kernelfunction.int32(), string(cudafunction.gr_gbidx()) + "* _nblock", "_startIter" };
+				yaccgen_param _startIter { kernelfunction.int32(), string(cudafunction.gr_atidx()), "_startIter" };
 				_cudaGenerator->add_param(_startIter);
 
-				yaccgen_param _endIter { kernelfunction.int32(), "((_startIter+_nblock-1) < (n-1) ?	(_startIter+_nblock-1) : (n-1))", "_endIter" };
+				yaccgen_param _endIter { kernelfunction.int32(), nblock, "_endIter" };
 				_cudaGenerator->add_param(_endIter);
 
-				_cudaGenerator->add_line("for (int _i = _startIter+(threadIdx.y) ; _i <= _endIter ; _i = _i+(blockDim.y))");
+				yaccgen_param _loopVar { kernelfunction.int32(), "", "_i" };
+				_cudaGenerator->add_param(_loopVar);
+
+				_cudaGenerator->add_for(_loopVar.name + tok_eq + _startIter.name, _loopVar.name + tok_lt + _endIter.name, _loopVar.name + tok_addeq + _nblock.name);
+				_cudaGenerator->add_openBlock();
 				stringstream ss;
 				((ExpressionStemnt*) _forList[var]->block)->expression->print(ss);
 				string tmpComp = ss.str();
@@ -95,9 +109,13 @@ namespace yaccgen {
 				_cudaGenerator->add_line(tmpComp + tok_semicolon);
 
 				_cudaGenerator->add_closeBlock();
-
-				YACCGenLog_write_Error("\n" + _cudaGenerator->_codeBlock.str());
+				_cudaGenerator->add_closeBlock();
+				_cudaGenerator->add_closeBlock();
 			}
+		}
+
+		void YAS_ParserWrapper::print_cuda(std::ostream& out) {
+			out << _cudaGenerator->_codeBlock;
 		}
 	}
 }

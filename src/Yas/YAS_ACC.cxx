@@ -109,28 +109,18 @@ namespace yaccgen {
 		}
 
 		void YAS_ACC::YAS_CheckPragmas() {
+
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_CheckPragmas are started."));
+			try {
 
-			//3 main concepts
-			/*	vector<string> items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_parallel);
-			 for (uint var = 0; var < items.size(); ++var) {
-			 pair<string, string> np(tok_acc_parallel, items[var]);
-			 this->_pragmaCodeBlocks.push_back(np);
-			 }
-			 items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_kernels);
-			 for (uint var = 0; var < items.size(); ++var) {
-			 pair<string, string> np(tok_acc_kernels, items[var]);
-			 this->_pragmaCodeBlocks.push_back(np);
-			 }
-			 items = yaccgen::findBlock_inCode(this->_finSS, tok_acc_data);
-			 for (uint var = 0; var < items.size(); ++var) {
-			 pair<string, string> np(tok_acc_data, items[var]);
-			 this->_pragmaCodeBlocks.push_back(np);
-			 }*/
+				parser = new YAS_ParserWrapper(_fnameInWorking.c_str(), false, false);
+				parser->parse_accpragma();
 
-			/*for (uint var = 0; var < _pragmaCodeBlocks.size(); ++var)
-			 YACCGenLog_write_Error(string(_pragmaCodeBlocks[var].first) + ": \n" + string(_pragmaCodeBlocks[var].second));*/
-
+			} catch (YACCGenException e) {
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_CheckPragmas finished."));
 		}
 
@@ -138,17 +128,38 @@ namespace yaccgen {
 		}
 
 		void YAS_ACC::YAS_Parallelizer() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer are started."));
 
-			parser = new YAS_ParserWrapper(_fnameInWorking.c_str(), false, false);
-			parser->findout_acc_pragma();
-			parser->parallel();
+			try {
 
+				parser->generate_cuda();
+
+				parser->generate_ompss();
+
+			} catch (YACCGenException e) {
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
+
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer finished."));
 		}
 
-
-
-
 		void YAS_ACC::YAS_Post_Driver() {
+
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Post_Driver are started."));
+			try {
+				string kernelName = "kernel0.cu";
+				ofstream fout(kernelName.c_str());
+				parser->print_cuda(fout);
+
+			} catch (YACCGenException e) {
+				throw e;
+			} catch (std::exception e) {
+				throw e;
+			}
+
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Post_Driver finished."));
 		}
 	}
 }

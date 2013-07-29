@@ -18,7 +18,7 @@ namespace yaccgen {
 		class YAS_CGen {
 
 		protected:
-
+			int _level = 0;
 
 		public:
 			stringstream _codeBlock;
@@ -37,6 +37,8 @@ namespace yaccgen {
 			void add_closeBlock();
 
 			virtual void add_line(string line);
+
+			virtual void add_for(string assignment, string binary, string unary);
 
 		};
 

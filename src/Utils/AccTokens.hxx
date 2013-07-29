@@ -25,10 +25,10 @@ namespace yaccgen {
 	const static string tok_acc_copyout = "copyout";
 	const static string tok_acc_copyinout = "copy";
 
-	const static char tok_openCrlyBracket = '{';
-	const static char tok_closeCrlyBracket = '}';
-	const static char tok_openBracket = '(';
-	const static char tok_closeBracket = ')';
+	const static string tok_openCrlyBracket = "{";
+	const static string tok_closeCrlyBracket = "}";
+	const static string tok_openBracket = "(";
+	const static string tok_closeBracket = ")";
 	const static char tok_semicolon = ';';
 	const static char tok_comma = ',';
 	const static char tok_eq = '=';
@@ -39,6 +39,9 @@ namespace yaccgen {
 	const static string tok_nq = "!=";
 	const static string tok_qlt = "=<";
 	const static string tok_qgt = "=>";
+	const static string tok_addeq = "+=";
+
+	const static string tok_for = "for";
 
 	const static string tok_com_single = "//";
 	const static string tok_com_startMul = "/*";

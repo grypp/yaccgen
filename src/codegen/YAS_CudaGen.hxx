@@ -37,6 +37,10 @@ namespace yaccgen {
 
 			void YAS_gen_kernelName();
 
+			string YAS_get_kernelName() const {
+				return _name;
+			}
+
 		private:
 			string _name;
 		};

@@ -34,9 +34,13 @@ namespace yaccgen {
 
 			virtual ~YAS_ParserWrapper();
 
-			void findout_acc_pragma();
+			void parse_accpragma();
 
-			void parallel();
+			void generate_cuda();
+
+			void generate_ompss();
+
+			void print_cuda(std::ostream& out);
 		}
 		;
 	}
