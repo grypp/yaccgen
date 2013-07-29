@@ -15,7 +15,7 @@ namespace yaccgen {
 
 		YAS_OMPSS::YAS_OMPSS(const char* fnameIn, const char* fnameOut, bool removeFile) :
 				YAS_ACC(fnameIn, fnameOut, removeFile) {
-
+			_fnameInOmpss = fnameIn;
 		}
 
 		void YAS_OMPSS::YAS_ACC_PRE_PerformYASSteps() {
@@ -24,8 +24,10 @@ namespace yaccgen {
 				YAS_ACC::YAS_Prepare();
 
 				string accFname = string("acc_") + gen_str(10) + string(_fnameIn);
+				string ompssFname = string("ompss_") + gen_str(10) + string(_fnameIn);
 				YAS_OmpSs_2ACC(mergePath(this->_tmpDir, accFname).c_str());
 				this->_fnameIn = mergePath(this->_tmpDir, accFname);
+				_ompssGenerator = new YAS_CGen(mergePath(this->_tmpDir, ompssFname));
 
 				YAS_ACC::YAS_Pre_Driver();
 
@@ -35,6 +37,60 @@ namespace yaccgen {
 				throw e;
 			}
 			YACCGenLog_write_Debug(getClassName(this) + string(" : Compiling Steps are started."));
+		}
+
+		void YAS_OMPSS::YAS_Parallelizer() {
+			//todo change approach
+			try {
+
+				YAS_ACC::YAS_Parallelizer();
+				YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizerare is started."));
+
+				fstream fin(_fnameInOmpss.c_str());
+				if (!fin.good()) throw YACCGenCodegenException(getClassName(this) + " File is not opened: " + _fnameInOmpss);
+				string line;
+				while (!fin.eof()) {
+					std::getline(fin, line);
+					trim(line);
+					if (line.find("#pragma", 0) != std::string::npos) {
+						if (line.find("device(acc/cuda)", 0) != std::string::npos) {
+							replaceAll(line, "device(acc/cuda)", "device(cuda)");
+							line.append(" ndrange(" + parser->_cudaGenerator->YAS_get_kernel_ndrangeFormat() + ")");
+							_ompssGenerator->add_line(line);
+
+							std::getline(fin, line);
+							trim(line);
+							if (line.find("#pragma omp task", 0) != std::string::npos) _ompssGenerator->add_line(line);
+							else throw YACCGenCodegenException(getClassName(this) + "there is no #pragma omp task!");
+
+							std::getline(fin, line);
+							trim(line);
+							if (line.find("#pragma", 0) != std::string::npos) {
+								std::getline(fin, line);
+								trim(line);
+							}
+
+							int bracket = line.find(tok_openCrlyBracket, 0) != std::string::npos ? 1 : 0;
+							while (!fin.eof()) {
+								std::getline(fin, line);
+								trim(line);
+								if (line.find(tok_openCrlyBracket, 0) != std::string::npos) bracket++;
+								if (line.find(tok_closeCrlyBracket, 0) != std::string::npos) bracket--;
+								if (bracket == 0) break;
+							}
+
+							_ompssGenerator->add_line(parser->_cudaGenerator->YAS_get_kernel_invoke() + tok_semicolon);
+						}
+					} else _ompssGenerator->add_line(line);
+				}
+
+			} catch (exception e) {
+				YACCGenLog_write_Error(e.what());
+				throw e;
+			} catch (YACCGenCodegenException e) {
+				throw e;
+			}
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer finished."));
 		}
 
 		void YAS_OMPSS::YAS_OmpSs_2ACC(const char* fnameOut) {
@@ -85,8 +141,16 @@ namespace yaccgen {
 			fout.close();
 			fin.close();
 
-			//if (this->_removeFiles) remove(fnameOut);
 		}
 
+		void YAS_OMPSS::YAS_Post_Driver() {
+			YAS_ACC::YAS_Post_Driver();
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer is started."));
+
+			_ompssGenerator->print_file();
+			YACCGenLog_write_Info(getClassName(this) + "  code generated as " + _ompssGenerator->_fname);
+
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer finished."));
+		}
 	}
 }

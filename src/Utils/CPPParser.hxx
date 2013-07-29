@@ -33,6 +33,58 @@ namespace yaccgen {
 
 	static const string C_LeX[5] = { "for", "if", "else", "while", "do" };
 
+	static __inline__ void load_file2ss(fstream &fin, stringstream &ss) {
+		string line;
+		while (!fin.eof()) {
+			std::getline(fin, line);
+			ss << line << endl;
+		}
+	}
+
+	static __inline__ string getLine(stringstream &ss, int linenum) {
+		string line;
+		int i = 1;
+		while (!ss.eof()) {
+			std::getline(ss, line);
+			if (i == linenum) return line;
+			i++;
+		}
+		ss.seekg(0, std::ios::beg);
+		return line;
+	}
+
+	static __inline__ string remove_for_token(fstream &fin, string token) {
+		stringstream ss;
+		string line, prevline;
+		try {
+			while (!fin.eof()) {
+				prevline = line;
+				std::getline(fin, line);
+				trim(line);
+				if (line.find(tok_for, 0) != std::string::npos) {
+					if (prevline.find(token, 0) == std::string::npos) {
+						std::getline(fin, line);
+						trim(line);
+						if (line.find(tok_openCrlyBracket, 0) == 0 || search_ArrayInLine(C_LeX, line)) {
+							int bracket = line.find(tok_openCrlyBracket, 0) != std::string::npos ? 1 : 0;
+							while (!fin.eof()) {
+								std::getline(fin, line);
+								trim(line);
+								if (line.find(tok_openCrlyBracket, 0) != std::string::npos) bracket++;
+								if (line.find(tok_closeCrlyBracket, 0) != std::string::npos) bracket--;
+							}
+						}
+					}else ss << line << endl;
+				}else ss << line << endl;
+			}
+		} catch (std::exception e) {
+			YACCGenLog_write_Error(string("Block Parser") + e.what());
+			throw e;
+		}
+
+		return ss.str();
+	}
+
 	static __inline__ vector<string> findBlock_inCode(stringstream &fin, vector<string> tokenList) {
 		vector<string> outList;
 		string line = "";
@@ -89,66 +141,66 @@ namespace yaccgen {
 	}
 
 	/*static __inline__ ForItems analyze_for(string line) {
-		ForItems items;
-		stringstream output, tmp1, tmp2, tmp3;
+	 ForItems items;
+	 stringstream output, tmp1, tmp2, tmp3;
 
-		int i = line.find(yaccgen::tok_openBracket, 0);
-		i++;
-		for (; line[i] != yaccgen::tok_ws; i++)
-			tmp1 << line[i];
-		for (; line[i] != yaccgen::tok_semicolon; i++) {
-			if (line[i] == yaccgen::tok_ws) continue;
-			else if (line[i] == yaccgen::tok_eq) {
-				if (tmp2.str().size() != 0) {
-					i++;
-					break;
-				} else continue;
-			}
-			tmp2 << line[i];
-		}
-		for (; line[i] != yaccgen::tok_semicolon; i++) {
-			if (line[i] == yaccgen::tok_ws) continue;
-			tmp3 << line[i];
-		}
+	 int i = line.find(yaccgen::tok_openBracket, 0);
+	 i++;
+	 for (; line[i] != yaccgen::tok_ws; i++)
+	 tmp1 << line[i];
+	 for (; line[i] != yaccgen::tok_semicolon; i++) {
+	 if (line[i] == yaccgen::tok_ws) continue;
+	 else if (line[i] == yaccgen::tok_eq) {
+	 if (tmp2.str().size() != 0) {
+	 i++;
+	 break;
+	 } else continue;
+	 }
+	 tmp2 << line[i];
+	 }
+	 for (; line[i] != yaccgen::tok_semicolon; i++) {
+	 if (line[i] == yaccgen::tok_ws) continue;
+	 tmp3 << line[i];
+	 }
 
-		//if (tmp3.str().size() != 0) items.init_params[tmp2.str()][tmp1.str()] = tmp3.str();
-		//else items.init_params[tmp1.str()]["int"] = tmp2.str();
+	 //if (tmp3.str().size() != 0) items.init_params[tmp2.str()][tmp1.str()] = tmp3.str();
+	 //else items.init_params[tmp1.str()]["int"] = tmp2.str();
 
-		tmp1.str("");
-		tmp2.str("");
-		tmp3.str("");
+	 tmp1.str("");
+	 tmp2.str("");
+	 tmp3.str("");
 
-		for (i++; line[i] != '!'; i++) {
-			tmp3 << line[i];
-			if (line[i] == yaccgen::tok_ws) continue;
-			tmp1 << line[i];
-		}
-		tmp3 << line[i];
-		i++;
-		tmp3 << line[i];
-		for (i++; line[i] != yaccgen::tok_semicolon; i++) {
-			tmp3 << line[i];
-			if (line[i] == yaccgen::tok_ws) continue;
-			tmp2 << line[i];
-		}
-		items.end_rule = tmp3.str();
-		//items.end_params[tmp1.str()]["int"] = "0";
-		//items.end_params[tmp2.str()]["int"] = "0";
+	 for (i++; line[i] != '!'; i++) {
+	 tmp3 << line[i];
+	 if (line[i] == yaccgen::tok_ws) continue;
+	 tmp1 << line[i];
+	 }
+	 tmp3 << line[i];
+	 i++;
+	 tmp3 << line[i];
+	 for (i++; line[i] != yaccgen::tok_semicolon; i++) {
+	 tmp3 << line[i];
+	 if (line[i] == yaccgen::tok_ws) continue;
+	 tmp2 << line[i];
+	 }
+	 items.end_rule = tmp3.str();
+	 //items.end_params[tmp1.str()]["int"] = "0";
+	 //items.end_params[tmp2.str()]["int"] = "0";
 
-		tmp1.str("");
-		tmp2.str("");
-		tmp3.str("");
+	 tmp1.str("");
+	 tmp2.str("");
+	 tmp3.str("");
 
-		for (i++; line[i] != yaccgen::tok_closeBracket.c_str(); i++)
-			if (line[i] == yaccgen::tok_ws) continue;
-			else tmp1 << line[i];
+	 for (i++; line[i] != yaccgen::tok_closeBracket.c_str(); i++)
+	 if (line[i] == yaccgen::tok_ws) continue;
+	 else tmp1 << line[i];
 
-		items.acc_param = tmp1.str();
-		replaceAll(items.acc_param, "++", "");
-		replaceAll(items.acc_param, "--", "");
-		items.iteration_acc = tmp1.str();
-		return items;
-	}*/
+	 items.acc_param = tmp1.str();
+	 replaceAll(items.acc_param, "++", "");
+	 replaceAll(items.acc_param, "--", "");
+	 items.iteration_acc = tmp1.str();
+	 return items;
+	 }*/
 
 	static __inline__ void getInsideBrackets(fstream &fin, stringstream &ss) {
 

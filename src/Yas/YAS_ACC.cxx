@@ -134,8 +134,6 @@ namespace yaccgen {
 
 				parser->generate_cuda();
 
-				parser->generate_ompss();
-
 			} catch (YACCGenException e) {
 				throw e;
 			} catch (std::exception e) {
@@ -149,9 +147,11 @@ namespace yaccgen {
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Post_Driver are started."));
 			try {
-				string kernelName = "kernel0.cu";
+
+				string kernelName = mergePath(this->_tmpDir, "kernel0.cu");
 				ofstream fout(kernelName.c_str());
 				parser->print_cuda(fout);
+				fout.close();
 
 			} catch (YACCGenException e) {
 				throw e;

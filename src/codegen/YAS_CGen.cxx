@@ -17,9 +17,10 @@ namespace yaccgen {
 			_codeBlock.str("");
 		}
 
-		void YAS_CGen::print_file(const char* fname) {
-			ofstream fout(fname);
-			fout << this->_codeBlock;
+		void YAS_CGen::print_file() {
+			ofstream fout(_fname.c_str());
+			fout << this->_codeBlock.str();
+			fout.close();
 		}
 
 		void YAS_CGen::add_method(string returnType, string name, ParameterTable params) {

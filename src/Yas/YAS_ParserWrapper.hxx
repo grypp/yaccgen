@@ -26,9 +26,10 @@ namespace yaccgen {
 			Project *_prj;
 			TransUnit *_unit;
 			vector<ForStemnt*> _forList;
-			YAS_CudaGen *_cudaGenerator;
 
 		public:
+
+			YAS_CudaGen *_cudaGenerator;
 
 			YAS_ParserWrapper(const char* fname, bool use_cpp, bool isDebug);
 
@@ -37,8 +38,6 @@ namespace yaccgen {
 			void parse_accpragma();
 
 			void generate_cuda();
-
-			void generate_ompss();
 
 			void print_cuda(std::ostream& out);
 		}

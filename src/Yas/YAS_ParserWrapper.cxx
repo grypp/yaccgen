@@ -15,17 +15,14 @@ namespace yaccgen {
 			_prj->SetPrintOption(isDebug);
 			_unit = _prj->parse(fname, false, NULL, true, NULL, NULL, NULL);
 			this->_cudaGenerator = new YAS_CudaGen();
+			fstream fin(fname);
+			//TODO MAJOR !!!!
 		}
 
 		YAS_ParserWrapper::~YAS_ParserWrapper() {
 			this->_prj->~Project();
 			this->_unit->~TransUnit();
 		}
-
-		void YAS_ParserWrapper::generate_ompss() {
-
-		}
-
 
 		void YAS_ParserWrapper::parse_accpragma() {
 			//todo only one main code!!
@@ -88,7 +85,7 @@ namespace yaccgen {
 				_cudaGenerator->add_line(string("if(") + firstVal + tok_lt + nblock + string("  )"));
 				_cudaGenerator->add_openBlock();
 
-				yaccgen_param _nblock { string(kernelfunction.int32()), string(cudafunction.gr_atidminx()), "_nblock" };
+				yaccgen_param _nblock { string(kernelfunction.int32()), string(cudafunction.gr_btnumx()), "_nblock" };
 				_cudaGenerator->add_param(_nblock);
 
 				yaccgen_param _startIter { kernelfunction.int32(), string(cudafunction.gr_atidx()), "_startIter" };
@@ -115,7 +112,8 @@ namespace yaccgen {
 		}
 
 		void YAS_ParserWrapper::print_cuda(std::ostream& out) {
-			out << _cudaGenerator->_codeBlock;
+			//todo change this approach
+			out << _cudaGenerator->_codeBlock.str();
 		}
 	}
 }

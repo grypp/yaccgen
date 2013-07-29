@@ -15,15 +15,15 @@ namespace yaccgen {
 	static YACCGenLog logger;
 
 	void YACCGenLog_write_Debug(string log) {
-		//logger.write("[ACCP][DEBUG]", log);
+		//logger.write("[YACCGEN][DEBUG]", log);
 	}
 
 	void YACCGenLog_write_Info(string log) {
-		logger.write("[ACCP][INFO]", log);
+		logger.write("[YACCGEN][INFO]", log);
 	}
 
 	void YACCGenLog_write_Error(string log) {
-		logger.error("[ACCP][ERROR]", log);
+		logger.error("[YACCGEN][ERROR]", log);
 	}
 
 	YACCGenLog::YACCGenLog() {

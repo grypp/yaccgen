@@ -20,13 +20,19 @@ namespace yaccgen {
 		protected:
 			int _level = 0;
 
+
+
 		public:
 			stringstream _codeBlock;
+			string _fname;
+
 			YAS_CGen();
+
+			YAS_CGen(string fname) {_fname = fname;}
 
 			virtual ~YAS_CGen();
 
-			void print_file(const char* fname);
+			void print_file();
 
 			virtual void add_method(string returnType, string name, ParameterTable params);
 

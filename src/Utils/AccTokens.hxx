@@ -30,7 +30,7 @@ namespace yaccgen {
 	const static string tok_openBracket = "(";
 	const static string tok_closeBracket = ")";
 	const static char tok_semicolon = ';';
-	const static char tok_comma = ',';
+	const static string tok_comma = ",";
 	const static char tok_eq = '=';
 	const static char tok_ws = ' ';
 	const static char tok_lt = '<';

@@ -9,12 +9,22 @@
 #define YAS_OMPSS_HXX_
 
 #include "../Utils/YACCGenUtils.hxx"
+#include "../codegen/YAS_CGen.hxx"
+#include "../codegen/YAS_CudaGen.hxx"
+#include "../codegen/YAS_CudaKernel.hxx"
 #include "YAS_ACC.hxx"
+
+using namespace yaccgen;
+using namespace codegen;
 
 namespace yaccgen {
 	namespace yas {
 
 		class YAS_OMPSS: public YAS_ACC {
+
+		private:
+			YAS_CGen *_ompssGenerator;
+			string _fnameInOmpss;
 
 		public:
 
@@ -24,6 +34,9 @@ namespace yaccgen {
 
 			void YAS_ACC_PRE_PerformYASSteps();
 
+			void YAS_Parallelizer();
+
+			void YAS_Post_Driver();
 		};
 	}
 }
