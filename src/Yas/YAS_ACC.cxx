@@ -84,10 +84,10 @@ namespace yaccgen {
 		void YAS_ACC::YAS_Prepare() {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Prepare are started."));
 
-			this->_tmpDir = string("yaccgen_") + yaccgen::gen_str(10);
+			this->_tmpDir = pre_yaccgen + yaccgen::gen_str(10);
 			exec_newdir(_tmpDir);
 
-			string workingFile = mergePath(_tmpDir, string("yaccgen_") + _fnameIn);
+			string workingFile = mergePath(_tmpDir, pre_org + _fnameIn);
 			this->_fnameInWorking = workingFile.c_str();
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Prepare finished."));
 		}

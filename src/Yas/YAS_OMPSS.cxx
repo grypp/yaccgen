@@ -24,7 +24,7 @@ namespace yaccgen {
 				YAS_ACC::YAS_Prepare();
 
 				string accFname = pre_acc + gen_str(5) + string(_fnameIn);
-				string ompssFname = pre_ompss + string(get_filename(_fnameIn.c_str())) + "_" + gen_str(5);
+				string ompssFname = pre_yaccgen + pre_ompss + string(get_filename(_fnameIn.c_str())) + "_" + gen_str(5);
 				YAS_OmpSs_2ACC(mergePath(this->_tmpDir, accFname).c_str());
 				this->_fnameIn = mergePath(this->_tmpDir, accFname);
 				_ompssGenerator = new YAS_CGen(ompssFname);

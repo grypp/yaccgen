@@ -33,6 +33,8 @@ namespace yaccgen {
 	static const string pre_kernel = "kernel_";
 	static const string pre_ompss = "ompss_";
 	static const string pre_acc = "acc_";
+	static const string pre_yaccgen = "yaccgen_";
+	static const string pre_org = "orginal_";
 
 	static __inline__ void load_file2ss(fstream &fin, stringstream &ss) {
 		string line;

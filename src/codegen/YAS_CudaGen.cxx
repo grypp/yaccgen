@@ -12,7 +12,7 @@ namespace yaccgen {
 	namespace codegen {
 
 		YAS_CudaGen::YAS_CudaGen() {
-			_fname = "kernel_" + yaccgen::gen_str(5);
+			_fname = pre_yaccgen + pre_kernel + yaccgen::gen_str(5);
 		}
 
 		YAS_CudaGen::~YAS_CudaGen() {

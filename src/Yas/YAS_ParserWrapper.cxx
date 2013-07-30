@@ -25,6 +25,8 @@ namespace yaccgen {
 			fout.close();
 
 			_unit = _prj->parse(fnameWithoutToken.c_str(), false, NULL, true, NULL, NULL, NULL);
+
+			remove(fnameWithoutToken.c_str());
 		}
 
 		YAS_ParserWrapper::~YAS_ParserWrapper() {
