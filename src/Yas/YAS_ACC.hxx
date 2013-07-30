@@ -16,6 +16,7 @@ using namespace std;
 #include "../Utils/YACCGenUtils.hxx"
 #include "../Utils/CPPParser.hxx"
 #include "YAS_ParserWrapper.hxx"
+#include "../Utils/YACCGenCompiler.hxx"
 
 namespace yaccgen {
 	namespace yas {
@@ -62,6 +63,9 @@ namespace yaccgen {
 			virtual void YAS_Parallelizer();
 
 			virtual void YAS_Post_Driver();
+
+			virtual void YAS_Compile(){}
+
 		};
 	}
 }

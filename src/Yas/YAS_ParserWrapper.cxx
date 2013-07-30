@@ -10,13 +10,22 @@
 namespace yaccgen {
 	namespace yas {
 
-		YAS_ParserWrapper::YAS_ParserWrapper(const char* fname, bool use_cpp, bool isDebug) {
+		YAS_ParserWrapper::YAS_ParserWrapper(const char* fname, string workingDir, bool use_cpp, bool isDebug) {
 			_prj = new Project();
 			_prj->SetPrintOption(isDebug);
-			_unit = _prj->parse(fname, false, NULL, true, NULL, NULL, NULL);
-			this->_cudaGenerator = new YAS_CudaGen();
+
 			fstream fin(fname);
 			//TODO MAJOR !!!!
+			string ss = remove_for_token(fin, tok_pragma);
+			fin.close();
+
+			string fnameWithoutToken = mergePath(workingDir, "withoutToken_" + gen_str(5) + get_extension_filename(fname));
+			cout << fnameWithoutToken << endl;
+			ofstream fout(fnameWithoutToken.c_str());
+			fout << ss;
+			fout.close();
+
+			_unit = _prj->parse(fnameWithoutToken.c_str(), false, NULL, true, NULL, NULL, NULL);
 		}
 
 		YAS_ParserWrapper::~YAS_ParserWrapper() {
@@ -45,14 +54,14 @@ namespace yaccgen {
 
 			//FOR EACH blocks in the list will be generated new kernel!
 			for (uint var = 0; var < _forList.size(); ++var) {
+				this->_cudaGenerator.push_back(new YAS_CudaGen());
 				string nblock, loopVar;
-				//fixme change parameter table!
+				//todo change parameter table!
 				//ParameterTable params;
 				vector<string> params;
 
 				//todo kernel configuration must depend on items
-				this->_cudaGenerator->YAS_gen_kernel(16, 1, 8, 1, 1, 0);
-				_cudaGenerator->YAS_gen_kernelName();
+				this->_cudaGenerator[var]->YAS_gen_kernel(16, 1, 8, 1, 1, 0);
 
 				loopVar = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->name;
 				//loopVar_Val = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->entry->Show();
@@ -78,42 +87,44 @@ namespace yaccgen {
 						params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_rightExpr)->array)->name->entry->Show());
 					}
 				}
-				_cudaGenerator->add_method(params);
-				_cudaGenerator->add_openBlock();
+				_cudaGenerator[var]->add_method(params);
+				_cudaGenerator[var]->add_openBlock();
 
 				string firstVal = "0";
-				_cudaGenerator->add_line(string("if(") + firstVal + tok_lt + nblock + string("  )"));
-				_cudaGenerator->add_openBlock();
+				_cudaGenerator[var]->add_line(string("if(") + firstVal + tok_lt + nblock + string("  )"));
+				_cudaGenerator[var]->add_openBlock();
 
 				yaccgen_param _nblock { string(kernelfunction.int32()), string(cudafunction.gr_btnumx()), "_nblock" };
-				_cudaGenerator->add_param(_nblock);
+				_cudaGenerator[var]->add_param(_nblock);
 
 				yaccgen_param _startIter { kernelfunction.int32(), string(cudafunction.gr_atidx()), "_startIter" };
-				_cudaGenerator->add_param(_startIter);
+				_cudaGenerator[var]->add_param(_startIter);
 
 				yaccgen_param _endIter { kernelfunction.int32(), nblock, "_endIter" };
-				_cudaGenerator->add_param(_endIter);
+				_cudaGenerator[var]->add_param(_endIter);
 
 				yaccgen_param _loopVar { kernelfunction.int32(), "", "_i" };
-				_cudaGenerator->add_param(_loopVar);
+				_cudaGenerator[var]->add_param(_loopVar);
 
-				_cudaGenerator->add_for(_loopVar.name + tok_eq + _startIter.name, _loopVar.name + tok_lt + _endIter.name, _loopVar.name + tok_addeq + _nblock.name);
-				_cudaGenerator->add_openBlock();
+				_cudaGenerator[var]->add_for(_loopVar.name + tok_eq + _startIter.name, _loopVar.name + tok_lt + _endIter.name, _loopVar.name + tok_addeq + _nblock.name);
+				_cudaGenerator[var]->add_openBlock();
 				stringstream ss;
 				((ExpressionStemnt*) _forList[var]->block)->expression->print(ss);
 				string tmpComp = ss.str();
 				replaceAll(tmpComp, loopVar, "_i");
-				_cudaGenerator->add_line(tmpComp + tok_semicolon);
+				_cudaGenerator[var]->add_line(tmpComp + tok_semicolon);
 
-				_cudaGenerator->add_closeBlock();
-				_cudaGenerator->add_closeBlock();
-				_cudaGenerator->add_closeBlock();
+				_cudaGenerator[var]->add_closeBlock();
+				_cudaGenerator[var]->add_closeBlock();
+				_cudaGenerator[var]->add_closeBlock();
 			}
 		}
 
-		void YAS_ParserWrapper::print_cuda(std::ostream& out) {
-			//todo change this approach
-			out << _cudaGenerator->_codeBlock.str();
+		void YAS_ParserWrapper::print_cuda() {
+			for (uint var = 0; var < _cudaGenerator.size(); ++var) {
+				_cudaGenerator[var]->print_file();
+				YACCGenLog_write_Info(getClassName(this) + "  kernel code generated as " + _cudaGenerator[var]->YAS_get_name());
+			}
 		}
 	}
 }

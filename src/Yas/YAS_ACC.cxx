@@ -54,6 +54,8 @@ namespace yaccgen {
 
 				YAS_Post_Driver();
 
+				YAS_Compile();
+
 			} catch (YACCGenException e) {
 				throw e;
 			} catch (std::exception e) {
@@ -113,7 +115,7 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_CheckPragmas are started."));
 			try {
 
-				parser = new YAS_ParserWrapper(_fnameInWorking.c_str(), false, false);
+				parser = new YAS_ParserWrapper(_fnameInWorking.c_str(),this->_tmpDir, false, false);
 				parser->parse_accpragma();
 
 			} catch (YACCGenException e) {
@@ -148,10 +150,7 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Post_Driver are started."));
 			try {
 
-				string kernelName = mergePath(this->_tmpDir, "kernel0.cu");
-				ofstream fout(kernelName.c_str());
-				parser->print_cuda(fout);
-				fout.close();
+				parser->print_cuda();
 
 			} catch (YACCGenException e) {
 				throw e;

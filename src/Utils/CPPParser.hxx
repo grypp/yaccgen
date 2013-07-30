@@ -63,22 +63,24 @@ namespace yaccgen {
 				trim(line);
 				if (line.find(tok_for, 0) != std::string::npos) {
 					if (prevline.find(token, 0) == std::string::npos) {
+						prevline = line;
 						std::getline(fin, line);
 						trim(line);
-						if (line.find(tok_openCrlyBracket, 0) == 0 || search_ArrayInLine(C_LeX, line)) {
-							int bracket = line.find(tok_openCrlyBracket, 0) != std::string::npos ? 1 : 0;
+						if (prevline.find(tok_openCrlyBracket, 0) != string::npos || line.find(tok_openCrlyBracket, 0) == 0 || search_ArrayInLine(C_LeX, line)) {
+							int bracket = prevline.find(tok_openCrlyBracket, 0) != string::npos || line.find(tok_openCrlyBracket, 0) != std::string::npos ? 1 : 0;
 							while (!fin.eof()) {
 								std::getline(fin, line);
 								trim(line);
 								if (line.find(tok_openCrlyBracket, 0) != std::string::npos) bracket++;
 								if (line.find(tok_closeCrlyBracket, 0) != std::string::npos) bracket--;
+								if (bracket == 0) break;
 							}
 						}
-					}else ss << line << endl;
-				}else ss << line << endl;
+					} else ss << line << endl;
+				} else ss << line << endl;
 			}
 		} catch (std::exception e) {
-			YACCGenLog_write_Error(string("Block Parser") + e.what());
+			YACCGenLog_write_Error(string("remove_for_token") + e.what());
 			throw e;
 		}
 

@@ -29,9 +29,9 @@ namespace yaccgen {
 
 		public:
 
-			YAS_CudaGen *_cudaGenerator;
+			vector<YAS_CudaGen*> _cudaGenerator;
 
-			YAS_ParserWrapper(const char* fname, bool use_cpp, bool isDebug);
+			YAS_ParserWrapper(const char* fname, string workingDir, bool use_cpp, bool isDebug);
 
 			virtual ~YAS_ParserWrapper();
 
@@ -39,7 +39,7 @@ namespace yaccgen {
 
 			void generate_cuda();
 
-			void print_cuda(std::ostream& out);
+			void print_cuda();
 		}
 		;
 	}

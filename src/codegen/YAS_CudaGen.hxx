@@ -25,6 +25,8 @@ namespace yaccgen {
 		public:
 			YAS_CudaGen();
 
+			YAS_CudaGen(string fname) : YAS_CGen(fname) {}
+
 			~YAS_CudaGen();
 
 			void add_method(string name, ParameterTable params);
@@ -43,13 +45,8 @@ namespace yaccgen {
 
 			void YAS_gen_kernelName();
 
-			string YAS_get_kernelName() const {
-				return _name;
-			}
-
 		private:
 			vector<yaccgen_param> _params;
-			string _name;
 			CUDAKernel _currentKernel;
 		};
 	}

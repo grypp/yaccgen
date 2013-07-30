@@ -12,6 +12,7 @@ namespace yaccgen {
 	namespace codegen {
 
 		YAS_CudaGen::YAS_CudaGen() {
+			_fname = "kernel_" + yaccgen::gen_str(5);
 		}
 
 		YAS_CudaGen::~YAS_CudaGen() {
@@ -21,7 +22,7 @@ namespace yaccgen {
 		string YAS_CudaGen::YAS_get_kernel_signature() {
 			string signature;
 			signature.reserve(150);
-			signature.append(YAS_CudaGen::YAS_get_kernelName() + tok_openBracket);
+			signature.append(YAS_CudaGen::YAS_get_name() + tok_openBracket);
 			for (uint var = 0; var < this->_params.size(); ++var) {
 				signature.append(_params[var].type + tok_ws + _params[var].name + tok_ws);
 				if (var != _params.size() - 1) signature.append(tok_comma);
@@ -33,7 +34,7 @@ namespace yaccgen {
 		string YAS_CudaGen::YAS_get_kernel_invoke() {
 			string signature;
 			signature.reserve(150);
-			signature.append(YAS_CudaGen::YAS_get_kernelName() + tok_openBracket);
+			signature.append(YAS_CudaGen::YAS_get_name() + tok_openBracket);
 			for (uint var = 0; var < this->_params.size(); ++var) {
 				signature.append(_params[var].name + tok_ws);
 				if (var != _params.size() - 1) signature.append(tok_comma);
@@ -77,7 +78,7 @@ namespace yaccgen {
 		void YAS_CudaGen::add_method(vector<string> params) {
 
 			this->_codeBlock << "__global__ void" << tok_ws;
-			this->_codeBlock << _name << tok_ws << tok_openBracket;
+			this->_codeBlock << _fname << tok_ws << tok_openBracket;
 
 			for (uint var = 0; var < params.size(); ++var) {
 				vector<string> paramstr = split(params[var], tok_ws);
@@ -91,7 +92,7 @@ namespace yaccgen {
 		}
 
 		void YAS_CudaGen::YAS_gen_kernelName() {
-			_name = "kernel_" + yaccgen::gen_str(5);
+			_fname = "kernel_" + yaccgen::gen_str(5);
 		}
 
 #if old

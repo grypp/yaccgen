@@ -61,6 +61,13 @@ namespace yaccgen {
 		s << val;
 		return s.str();
 	}
+
+	static __inline__ std::string doubleToString(double val) {
+		std::ostringstream s;
+		s << val;
+		return s.str();
+	}
+
 	static __inline__ std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
 		std::stringstream ss(s);
 		std::string item;

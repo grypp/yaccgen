@@ -49,13 +49,14 @@ namespace yaccgen {
 				fstream fin(_fnameInOmpss.c_str());
 				if (!fin.good()) throw YACCGenCodegenException(getClassName(this) + " File is not opened: " + _fnameInOmpss);
 				string line;
+				int kernelNameCounter = 0;
 				while (!fin.eof()) {
 					std::getline(fin, line);
 					trim(line);
 					if (line.find("#pragma", 0) != std::string::npos) {
 						if (line.find("device(acc/cuda)", 0) != std::string::npos) {
 							replaceAll(line, "device(acc/cuda)", "device(cuda)");
-							line.append(" ndrange(" + parser->_cudaGenerator->YAS_get_kernel_ndrangeFormat() + ")");
+							line.append(" ndrange(" + parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_ndrangeFormat() + ")");
 							_ompssGenerator->add_line(line);
 
 							std::getline(fin, line);
@@ -79,7 +80,8 @@ namespace yaccgen {
 								if (bracket == 0) break;
 							}
 
-							_ompssGenerator->add_line(parser->_cudaGenerator->YAS_get_kernel_invoke() + tok_semicolon);
+							_ompssGenerator->add_line(parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_invoke() + tok_semicolon);
+							kernelNameCounter++;
 						}
 					} else _ompssGenerator->add_line(line);
 				}
@@ -148,9 +150,20 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer is started."));
 
 			_ompssGenerator->print_file();
-			YACCGenLog_write_Info(getClassName(this) + "  code generated as " + _ompssGenerator->_fname);
+			YACCGenLog_write_Info(getClassName(this) + "  code generated as " + _ompssGenerator->YAS_get_name());
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer finished."));
+		}
+
+		void YAS_OMPSS::YAS_Compile() {
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Compile is started."));
+			vector<string> flist;
+			flist.push_back(_ompssGenerator->YAS_get_name());
+			for (uint var = 0; var < parser->_cudaGenerator.size(); ++var)
+				flist.push_back(parser->_cudaGenerator[var]->YAS_get_name());
+			compileWithMNVCC(flist, _fnameOut.c_str());
+
+			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Compile finished."));
 		}
 	}
 }

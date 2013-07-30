@@ -37,6 +37,9 @@ namespace yaccgen {
 			void YAS_Parallelizer();
 
 			void YAS_Post_Driver();
+
+			void YAS_Compile();
+
 		};
 	}
 }

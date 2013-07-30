@@ -97,6 +97,7 @@ namespace yaccgen {
 	}
 
 	static __inline__ std::string exec_system(const char* cmd) {
+		YACCGenLog_write_Info(string("System Call: ") + cmd);
 		FILE* pipe = popen(cmd, "r");
 		if (!pipe) return ERROR_EXEC;
 		char buffer[128];

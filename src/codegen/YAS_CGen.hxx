@@ -20,11 +20,11 @@ namespace yaccgen {
 		protected:
 			int _level = 0;
 
-
+			string _fname;
 
 		public:
 			stringstream _codeBlock;
-			string _fname;
+
 
 			YAS_CGen();
 
@@ -45,6 +45,8 @@ namespace yaccgen {
 			virtual void add_line(string line);
 
 			virtual void add_for(string assignment, string binary, string unary);
+
+			string YAS_get_name() const {return _fname;}
 
 		};
 
