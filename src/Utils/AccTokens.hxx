@@ -13,7 +13,9 @@ using namespace std;
 
 namespace yaccgen {
 
-	const static string tok_pragma = "#pragma";
+	const static string tok_pp_include = "#include";
+
+	const static string tok_pp_pragma = "#pragma";
 	const static string tok_acc = "acc";
 	const static string tok_acc_data = "data";
 	const static string tok_acc_parallel = "parallel";
@@ -48,9 +50,13 @@ namespace yaccgen {
 	const static string tok_com_closeMul = "*/";
 
 	const static string tok_omp = "omp";
+	const static string tok_omp_ndrange = "ndrange";
 	const static string tok_omp_target = "target";
 	const static string tok_omp_device = "device";
-	const static string tok_omp_env = "acc/cuda";
+	const static string tok_omp_devive_acc = "acc/cuda";
+	const static string tok_omp_task_wait = "taskwait";
+	const static string tok_omp_devive_cuda = "cuda";
+	const static string tok_omp_devive_opencl = "cl";
 	const static string tok_omp_copyin = "copy_in";
 	const static string tok_omp_copyout = "copy_out";
 	const static string tok_omp_copyinout = "copy_inout";

@@ -1,5 +1,3 @@
-#define _OPENACC_
-
 #ifndef YACCGENUTILS_HXX_
 #define YACCGENUTILS_HXX_
 
@@ -15,7 +13,7 @@
 #include <algorithm>
 #include <vector>
 #include <typeinfo>
-
+#include <ctime>
 #include "YACCGenLog.hxx"
 #include "YACCGenException.hxx"
 #include "YACCGenStrParser.hxx"
@@ -49,17 +47,11 @@ namespace yaccgen {
 	void timing_end(timing_t* t);
 	double timing_elapsed(const timing_t* t);
 
-	char copy_file(const char* source, const char* dest);
+	string gen_str(int len);
 
-	static __inline__ string gen_str(int len) {
-		static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-		static const int stringLength = sizeof(alphanum) - 1;
-		srand(time(NULL));
-		char *str = (char*) calloc(len + 1, sizeof(char));
-		for (int i = 0; i < len; i++)
-			str[i] = alphanum[rand() % stringLength];
-		return str;
-	}
+	void gen_random(char *s, const int len);
+
+	char copy_file(const char* source, const char* dest);
 
 	template<class TYPE>
 	static __inline__ string getClassName(TYPE obj) {

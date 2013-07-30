@@ -16,7 +16,7 @@ namespace yaccgen {
 
 			fstream fin(fname);
 			//TODO MAJOR !!!!
-			string ss = remove_for_token(fin, tok_pragma);
+			string ss = remove_for_token(fin, tok_pp_pragma);
 			fin.close();
 			_workingDir = workingDir;
 			string fnameWithoutToken = mergePath(workingDir, "withoutToken_" + gen_str(5) + get_extension_filename(fname));

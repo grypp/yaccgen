@@ -26,6 +26,7 @@ namespace yaccgen {
 	static const string C_LeX[5] = { "for", "if", "else", "while", "do" };
 
 	static const string ext_C = "c";
+	static const string ext_H = "h";
 	static const string ext_CXX = "cxx";
 	static const string ext_CUDA = "cu";
 	static const string ext_OPENCL = "cl";

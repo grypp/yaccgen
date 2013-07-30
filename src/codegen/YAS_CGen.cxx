@@ -11,15 +11,16 @@ namespace yaccgen {
 	namespace codegen {
 
 		YAS_CGen::YAS_CGen() {
+			_level=0;
 		}
 
 		YAS_CGen::~YAS_CGen() {
 			_codeBlock.str("");
+			_level=0;
 		}
 
 		void YAS_CGen::print_file(string dir, string ext) {
 			string path = mergePath(dir, _fname) + "." + ext;
-			YACCGenLog_write_Error(path);
 			ofstream fout(path.c_str());
 			fout << this->_codeBlock.str();
 			fout.close();

@@ -29,7 +29,7 @@ namespace yaccgen {
 		public:
 			YAS_CudaGen();
 
-			YAS_CudaGen(string fname) : YAS_CGen(fname) { }
+			YAS_CudaGen(string fname) : YAS_CGen(fname) { _level=0; }
 
 			~YAS_CudaGen();
 

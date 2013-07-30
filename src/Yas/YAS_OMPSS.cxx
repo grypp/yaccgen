@@ -25,9 +25,11 @@ namespace yaccgen {
 
 				string accFname = pre_acc + gen_str(5) + string(_fnameIn);
 				string ompssFname = pre_yaccgen + pre_ompss + string(get_filename(_fnameIn.c_str())) + "_" + gen_str(5);
+				string ompssHeaderFname = pre_yaccgen + "auxheader_" + string(get_filename(_fnameIn.c_str())) + "_" + gen_str(5);
 				YAS_OmpSs_2ACC(mergePath(this->_tmpDir, accFname).c_str());
 				this->_fnameIn = mergePath(this->_tmpDir, accFname);
 				_ompssGenerator = new YAS_CGen(ompssFname);
+				_ompssHeaderGenerator = new YAS_CGen(ompssHeaderFname);
 
 				YAS_ACC::YAS_Pre_Driver();
 
@@ -44,24 +46,31 @@ namespace yaccgen {
 			try {
 
 				YAS_ACC::YAS_Parallelizer();
+				for (uint var = 0; var < this->parser->_cudaGenerator.size(); ++var)
+					_ompssHeaderGenerator->add_line("#include \"" + parser->_cudaGenerator[var]->YAS_get_name() + "." + ext_CUDA + "\"");
+
 				YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizerare is started."));
 
 				fstream fin(_fnameInOmpss.c_str());
 				if (!fin.good()) throw YACCGenCodegenException(getClassName(this) + " File is not opened: " + _fnameInOmpss);
-				string line;
+				string line, prevLine;
 				int kernelNameCounter = 0;
 				while (!fin.eof()) {
+					prevLine = line;
 					std::getline(fin, line);
 					trim(line);
-					if (line.find("#pragma", 0) != std::string::npos) {
-						if (line.find("device(acc/cuda)", 0) != std::string::npos) {
-							replaceAll(line, "device(acc/cuda)", "device(cuda)");
-							line.append(" ndrange(" + parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_ndrangeFormat() + ")");
-							_ompssGenerator->add_line(line);
+
+					if (prevLine.find(tok_pp_include, 0) != std::string::npos && line.find(tok_pp_include, 0) == std::string::npos) {
+						_ompssGenerator->add_line(string("#include \"") + _ompssHeaderGenerator->YAS_get_name() + "." + ext_H + "\"");
+					} else if (line.find(tok_pp_pragma, 0) != std::string::npos) {
+						if (line.find(tok_omp_devive_acc, 0) != std::string::npos) {
+							replaceAll(line, tok_omp_devive_acc, tok_omp_devive_cuda);
+							line.append(" " + tok_omp_ndrange + "(" + parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_ndrangeFormat() + ")");
+							_ompssHeaderGenerator->add_line(line);
 
 							std::getline(fin, line);
 							trim(line);
-							if (line.find("#pragma omp task", 0) != std::string::npos) _ompssGenerator->add_line(line);
+							if (line.find("#pragma omp task", 0) != std::string::npos) _ompssHeaderGenerator->add_line(line);
 							else throw YACCGenCodegenException(getClassName(this) + "there is no #pragma omp task!");
 
 							std::getline(fin, line);
@@ -81,7 +90,10 @@ namespace yaccgen {
 							}
 
 							_ompssGenerator->add_line(parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_invoke() + tok_semicolon);
+							_ompssHeaderGenerator->add_line(parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_signature() + tok_semicolon);
 							kernelNameCounter++;
+						}if (line.find(tok_omp_task_wait, 0) != std::string::npos) {
+							_ompssGenerator->add_line(line);
 						}
 					} else _ompssGenerator->add_line(line);
 				}
@@ -150,6 +162,7 @@ namespace yaccgen {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer is started."));
 
 			_ompssGenerator->print_file(this->_tmpDir, ext_C);
+			_ompssHeaderGenerator->print_file(this->_tmpDir, ext_H);
 
 			YACCGenLog_write_Info(getClassName(this) + "  code generated as " + _ompssGenerator->YAS_get_name());
 
@@ -158,10 +171,14 @@ namespace yaccgen {
 
 		void YAS_OMPSS::YAS_Compile() {
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Compile is started."));
+
 			vector<string> flist;
-			flist.push_back(_ompssGenerator->YAS_get_name());
+			flist.push_back(mergePath(_tmpDir, _ompssGenerator->YAS_get_name() + "." + ext_C));
+			//flist.push_back(mergePath(_tmpDir, _ompssHeaderGenerator->YAS_get_name() + "." + ext_H));
+
 			for (uint var = 0; var < parser->_cudaGenerator.size(); ++var)
 				flist.push_back(mergePath(_tmpDir, parser->_cudaGenerator[var]->YAS_get_name() + "." + ext_CUDA));
+
 			compileWithMNVCC(flist, _fnameOut.c_str());
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Compile finished."));

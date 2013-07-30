@@ -9,6 +9,31 @@
 
 namespace yaccgen {
 
+	void gen_random(char *s, int len) {
+		static const char alphanum[] = "0123456789"
+				"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+				"abcdefghijklmnopqrstuvwxyz";
+
+		for (int i = 0; i < len; ++i) {
+			s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+		}
+		s[len] = 0;
+	}
+
+	string gen_str(int len) {
+		/*	char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		 int stringLength = sizeof(alphanum) - 1;
+		 std::srand(std::time(0));
+		 char *str = (char*) calloc(len + 1, sizeof(char));
+		 for (int i = 0; i < len; i++) {
+		 str[i] = alphanum[rand() % stringLength];
+		 YACCGenLog_write_Error(intToString(rand() % stringLength));
+		 }*/
+		char str[len];
+		gen_random(str, len);
+		return str;
+	}
+
 	void timing_start(timing_t* t) {
 		memset(t, 0, sizeof(*t));
 		gettimeofday(&(t->start), NULL);

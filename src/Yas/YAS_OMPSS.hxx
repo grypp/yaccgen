@@ -24,6 +24,7 @@ namespace yaccgen {
 
 		private:
 			YAS_CGen *_ompssGenerator;
+			YAS_CGen *_ompssHeaderGenerator;
 			string _fnameInOmpss;
 
 		public:

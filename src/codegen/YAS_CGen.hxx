@@ -18,23 +18,27 @@ namespace yaccgen {
 		class YAS_CGen {
 
 		protected:
-			int _level = 0;
 
+			int _level;
 			string _fname;
 
 		public:
 			stringstream _codeBlock;
 
-
 			YAS_CGen();
 
-			YAS_CGen(string fname) {_fname = fname;}
+			YAS_CGen(string fname) {
+				_fname = fname;
+				_level=0;
+			}
 
 			virtual ~YAS_CGen();
 
-			void print_file() { print_file("",""); }
+			void print_file() {
+				print_file("", "");
+			}
 
-			void print_file(string dir,string ext);
+			void print_file(string dir, string ext);
 
 			virtual void add_method(string returnType, string name, ParameterTable params);
 
@@ -48,7 +52,9 @@ namespace yaccgen {
 
 			virtual void add_for(string assignment, string binary, string unary);
 
-			string YAS_get_name() const {return _fname;}
+			string YAS_get_name() const {
+				return _fname;
+			}
 
 		};
 

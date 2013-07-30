@@ -36,7 +36,7 @@ namespace yaccgen {
 			string _fnameInWorking;
 			string _tmpDir;
 
-			bool _removeFiles = true;
+			bool _removeFiles;
 
 			YAS_ParserWrapper* parser;
 
