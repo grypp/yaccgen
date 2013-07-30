@@ -18,9 +18,8 @@ namespace yaccgen {
 			//TODO MAJOR !!!!
 			string ss = remove_for_token(fin, tok_pragma);
 			fin.close();
-
+			_workingDir = workingDir;
 			string fnameWithoutToken = mergePath(workingDir, "withoutToken_" + gen_str(5) + get_extension_filename(fname));
-			cout << fnameWithoutToken << endl;
 			ofstream fout(fnameWithoutToken.c_str());
 			fout << ss;
 			fout.close();
@@ -122,7 +121,7 @@ namespace yaccgen {
 
 		void YAS_ParserWrapper::print_cuda() {
 			for (uint var = 0; var < _cudaGenerator.size(); ++var) {
-				_cudaGenerator[var]->print_file();
+				_cudaGenerator[var]->print_file(this->_workingDir, ext_CUDA);
 				YACCGenLog_write_Info(getClassName(this) + "  kernel code generated as " + _cudaGenerator[var]->YAS_get_name());
 			}
 		}

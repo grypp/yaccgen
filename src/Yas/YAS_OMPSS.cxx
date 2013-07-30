@@ -23,11 +23,11 @@ namespace yaccgen {
 			try {
 				YAS_ACC::YAS_Prepare();
 
-				string accFname = string("acc_") + gen_str(10) + string(_fnameIn);
-				string ompssFname = string("ompss_") + gen_str(10) + string(_fnameIn);
+				string accFname = pre_acc + gen_str(5) + string(_fnameIn);
+				string ompssFname = pre_ompss + string(get_filename(_fnameIn.c_str())) + "_" + gen_str(5);
 				YAS_OmpSs_2ACC(mergePath(this->_tmpDir, accFname).c_str());
 				this->_fnameIn = mergePath(this->_tmpDir, accFname);
-				_ompssGenerator = new YAS_CGen(mergePath(this->_tmpDir, ompssFname));
+				_ompssGenerator = new YAS_CGen(ompssFname);
 
 				YAS_ACC::YAS_Pre_Driver();
 
@@ -149,7 +149,8 @@ namespace yaccgen {
 			YAS_ACC::YAS_Post_Driver();
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer is started."));
 
-			_ompssGenerator->print_file();
+			_ompssGenerator->print_file(this->_tmpDir, ext_C);
+
 			YACCGenLog_write_Info(getClassName(this) + "  code generated as " + _ompssGenerator->YAS_get_name());
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Parallelizer finished."));
@@ -160,7 +161,7 @@ namespace yaccgen {
 			vector<string> flist;
 			flist.push_back(_ompssGenerator->YAS_get_name());
 			for (uint var = 0; var < parser->_cudaGenerator.size(); ++var)
-				flist.push_back(parser->_cudaGenerator[var]->YAS_get_name());
+				flist.push_back(mergePath(_tmpDir, parser->_cudaGenerator[var]->YAS_get_name() + "." + ext_CUDA));
 			compileWithMNVCC(flist, _fnameOut.c_str());
 
 			YACCGenLog_write_Debug(getClassName(this) + string(" : YAS_Compile finished."));

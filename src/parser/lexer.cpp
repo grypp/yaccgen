@@ -1467,7 +1467,8 @@ YY_RULE_SETUP
 { /* C++ style comment */
                          if (gProject->warn_cpp_comment && gProject->Parse_TOS->cpp_comment_warn){
                              gProject->Parse_TOS->cpp_comment_warn = 0;
-                             yywarn("C++ style comment encountered");
+                             //fixme look it after
+                             //yywarn("C++ style comment encountered");
                          }
                      }
 	YY_BREAK

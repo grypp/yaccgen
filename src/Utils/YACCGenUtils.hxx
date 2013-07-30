@@ -78,6 +78,18 @@ namespace yaccgen {
 		return strrchr(filename, '.');
 	}
 
+	static __inline__ const char* get_filename(const char* filename) {
+		string fName(filename);
+		size_t pos = fName.rfind(".");
+		if (pos == string::npos)  //No extension.
+		return fName.c_str();
+
+		if (pos == 0)    //. is at the front. Not an extension.
+		return fName.c_str();
+
+		return fName.substr(0, pos).c_str();
+	}
+
 	static __inline__ void upd_extension_filename(const char* fname, string newext) {
 		string ff(fname);
 		replaceAll(ff, string(get_extension_filename(fname)), newext);

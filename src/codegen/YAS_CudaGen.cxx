@@ -81,18 +81,20 @@ namespace yaccgen {
 			this->_codeBlock << _fname << tok_ws << tok_openBracket;
 
 			for (uint var = 0; var < params.size(); ++var) {
+
+				//todo very bad block
 				vector<string> paramstr = split(params[var], tok_ws);
-				yaccgen_param param { paramstr.front(), "", paramstr.back() };
+				string name = paramstr.back();
+				replaceAll(name, "*", "");
+				yaccgen_param param { paramstr.front(), "", name };
 				this->_params.push_back(param);
+				/////////////////////////////////////
+
 				this->_codeBlock << params[var] << tok_ws;
 				if (var != params.size() - 1) this->_codeBlock << tok_comma;
 			}
 
 			this->_codeBlock << tok_closeBracket << endl;
-		}
-
-		void YAS_CudaGen::YAS_gen_kernelName() {
-			_fname = "kernel_" + yaccgen::gen_str(5);
 		}
 
 #if old

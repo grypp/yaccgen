@@ -26,7 +26,7 @@ namespace yaccgen {
 			Project *_prj;
 			TransUnit *_unit;
 			vector<ForStemnt*> _forList;
-
+			string _workingDir;
 		public:
 
 			vector<YAS_CudaGen*> _cudaGenerator;

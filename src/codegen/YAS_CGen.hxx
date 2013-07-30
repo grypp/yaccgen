@@ -32,7 +32,9 @@ namespace yaccgen {
 
 			virtual ~YAS_CGen();
 
-			void print_file();
+			void print_file() { print_file("",""); }
+
+			void print_file(string dir,string ext);
 
 			virtual void add_method(string returnType, string name, ParameterTable params);
 

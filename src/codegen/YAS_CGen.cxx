@@ -17,8 +17,10 @@ namespace yaccgen {
 			_codeBlock.str("");
 		}
 
-		void YAS_CGen::print_file() {
-			ofstream fout(_fname.c_str());
+		void YAS_CGen::print_file(string dir, string ext) {
+			string path = mergePath(dir, _fname) + "." + ext;
+			YACCGenLog_write_Error(path);
+			ofstream fout(path.c_str());
 			fout << this->_codeBlock.str();
 			fout.close();
 		}

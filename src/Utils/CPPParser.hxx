@@ -23,15 +23,16 @@ namespace yaccgen {
 
 	typedef std::vector<yaccgen_param> ParameterTable;
 
-	typedef struct {
-		ParameterTable init_params;
-		string end_rule;
-		ParameterTable end_params;
-		string iteration_acc;
-		string acc_param;
-	} ForItems;
-
 	static const string C_LeX[5] = { "for", "if", "else", "while", "do" };
+
+	static const string ext_C = "c";
+	static const string ext_CXX = "cxx";
+	static const string ext_CUDA = "cu";
+	static const string ext_OPENCL = "cl";
+
+	static const string pre_kernel = "kernel_";
+	static const string pre_ompss = "ompss_";
+	static const string pre_acc = "acc_";
 
 	static __inline__ void load_file2ss(fstream &fin, stringstream &ss) {
 		string line;

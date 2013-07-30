@@ -22,10 +22,14 @@ namespace yaccgen {
 
 		class YAS_CudaGen: public YAS_CGen {
 
+		private:
+			vector<yaccgen_param> _params;
+			CUDAKernel _currentKernel;
+
 		public:
 			YAS_CudaGen();
 
-			YAS_CudaGen(string fname) : YAS_CGen(fname) {}
+			YAS_CudaGen(string fname) : YAS_CGen(fname) { }
 
 			~YAS_CudaGen();
 
@@ -43,11 +47,6 @@ namespace yaccgen {
 
 			string YAS_get_kernel_invoke();
 
-			void YAS_gen_kernelName();
-
-		private:
-			vector<yaccgen_param> _params;
-			CUDAKernel _currentKernel;
 		};
 	}
 }
