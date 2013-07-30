@@ -36,6 +36,7 @@ namespace yaccgen {
 			} catch (YACCGenException e) {
 				throw e;
 			} catch (std::exception e) {
+				YACCGenLog_write_Error(e.what());
 				throw e;
 			}
 

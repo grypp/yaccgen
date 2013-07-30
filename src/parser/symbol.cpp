@@ -86,81 +86,82 @@ SymEntry::~SymEntry() {
 
 #include <sstream>
 std::string SymEntry::Show() const {
-	std::stringstream out;
-	const char * typeEntry;
-	switch (type) {
-		default:
-			out << "Unknown entry type!";
-			break;
+		std::stringstream out;
+		const char * typeEntry;
+		switch (type) {
+			default:
+				out << "Unknown entry type!";
+				break;
 
-		case FctDeclEntry:
-			if (uVarDecl != NULL) {
-				uVarDecl->print(out, true, 0);
-				if (gProject->gDebug && uVarDecl->form) {
-					out << std::endl;
-					uVarDecl->form->printForm(out);
-				}
-			} else out << "NO definition for " << typeEntry << " entry!";
+			case FctDeclEntry:
+				if (uVarDecl != NULL) {
+					uVarDecl->print(out, true, 0);
+					if (gProject->gDebug && uVarDecl->form) {
+						out << std::endl;
+						uVarDecl->form->printForm(out);
+					}
+				} else out << "NO definition for " << typeEntry << " entry!";
 
-			if (u2FunctionDef != NULL) {
-				out << std::endl << "Position: ";
-				u2FunctionDef->location.printLocation(out);
-			} else out << std::endl << "No Position.";
-			break;
+				if (u2FunctionDef != NULL) {
+					out << std::endl << "Position: ";
+					u2FunctionDef->location.printLocation(out);
+				} else out << std::endl << "No Position.";
+				break;
 
-		case VarDeclEntry:
-		case TypedefEntry:
-		case ParamDeclEntry:
-			if (uVarDecl != NULL) {
-				uVarDecl->print(out, true, 0);
-				if (gProject->gDebug && uVarDecl->form) {
-					out << std::endl;
-					uVarDecl->form->printForm(out);
-				}
-			} else out << "NO definition for " << typeEntry << " entry!";
-			break;
+			case VarDeclEntry:
+			case TypedefEntry:
+			case ParamDeclEntry:
+				if (uVarDecl != NULL) {
+					uVarDecl->print(out, true, 0);
+					if (gProject->gDebug && uVarDecl->form) {
+						out << std::endl;
+						uVarDecl->form->printForm(out);
+					}
+				} else out << "NO definition for " << typeEntry << " entry!";
+				break;
 
-		case EnumConstEntry:
-			if (uEnumValue != NULL) uEnumValue->print(out);
-			else out << "NO definition for " << typeEntry << " entry!";
+			case EnumConstEntry:
+				if (uEnumValue != NULL) uEnumValue->print(out);
+				else out << "NO definition for " << typeEntry << " entry!";
 
-			if (u2EnumDef != NULL) {
-				out << std::endl << "Container: ";
-				u2EnumDef->print(out, NULL, 0);
-			} else out << std::endl << "No Container!";
-			break;
+				if (u2EnumDef != NULL) {
+					out << std::endl << "Container: ";
+					u2EnumDef->print(out, NULL, 0);
+				} else out << std::endl << "No Container!";
+				break;
 
-		case LabelEntry:
-			if (uLabelDef != NULL) uLabelDef->print(out, 0);
-			else out << "NO definition for " << typeEntry << " entry!";
+			case LabelEntry:
+				if (uLabelDef != NULL) uLabelDef->print(out, 0);
+				else out << "NO definition for " << typeEntry << " entry!";
 
-			if (u2LabelPosition != NULL) {
-				out << "Position: ";
-				u2LabelPosition->location.printLocation(out);
-			} else out << std::endl << "NO position!";
-			break;
+				if (u2LabelPosition != NULL) {
+					out << "Position: ";
+					u2LabelPosition->location.printLocation(out);
+				} else out << std::endl << "NO position!";
+				break;
 
-		case TagEntry:
-			if (uStructDef != NULL) uStructDef->printType(out, NULL, true, 0);
-			else out << "NO definition for " << typeEntry << " entry!";
-			break;
+			case TagEntry:
+				if (uStructDef != NULL) uStructDef->printType(out, NULL, true, 0);
+				else out << "NO definition for " << typeEntry << " entry!";
+				break;
 
-		case ComponentEntry:
-			if (uComponent != NULL) {
-				uComponent->print(out, true, 0);
-				if (gProject->gDebug && uComponent->form) {
-					out << std::endl;
-					uComponent->form->printForm(out);
-				}
-			} else out << "NO definition for " << typeEntry << " entry!";
+			case ComponentEntry:
+				if (uComponent != NULL) {
+					uComponent->print(out, true, 0);
+					if (gProject->gDebug && uComponent->form) {
+						out << std::endl;
+						uComponent->form->printForm(out);
+					}
+				} else out << "NO definition for " << typeEntry << " entry!";
 
-			if (u2Container != NULL) {
-				out << std::endl << "Container: ";
-				u2Container->print(out, NULL, 0);
-			} else out << std::endl << "No Container;";
-			break;
-	}
-	return out.str();
+				if (u2Container != NULL) {
+					out << std::endl << "Container: ";
+					u2Container->print(out, NULL, 0);
+				} else out << std::endl << "No Container;";
+				break;
+		}
+		return out.str();
+
 }
 
 void SymEntry::Show(std::ostream& out) const {

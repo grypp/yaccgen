@@ -52,72 +52,106 @@ namespace yaccgen {
 
 			KernelFunctions kernelfunction;
 			CUDAFunctions cudafunction;
+			try {
 
-			//FOR EACH blocks in the list will be generated new kernel!
-			for (uint var = 0; var < _forList.size(); ++var) {
-				this->_cudaGenerator.push_back(new YAS_CudaGen());
-				string nblock, loopVar;
-				//todo change parameter table!
-				//ParameterTable params;
-				vector<string> params;
+				//FOR EACH blocks in the list will be generated new kernel!
+				for (uint var = 0; var < _forList.size(); ++var) {
+					this->_cudaGenerator.push_back(new YAS_CudaGen());
+					string nblock, loopVar;
+					//todo change parameter table!
+					//ParameterTable params;
+					vector<string> params;
 
-				//todo kernel configuration must depend on items
-				this->_cudaGenerator[var]->YAS_gen_kernel(16, 1, 8, 1, 1, 0);
+					//todo kernel configuration must depend on items
+					this->_cudaGenerator[var]->YAS_gen_kernel(16, 1, 8, 1, 1, 0);
 
-				loopVar = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->name;
-				//loopVar_Val = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->entry->Show();
-				params.push_back(((Variable*) ((RelExpr*) _forList[var]->init)->_leftExpr)->name->entry->Show());
-				YACCGenLog_write_Info(string("Loop ") + loopVar + string(" will be gridified"));
+					loopVar = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->name;
+					//loopVar_Val = ((Variable*) (((RelExpr*) _forList[var]->init)->_leftExpr))->name->entry->Show();
+					params.push_back(((Variable*) ((RelExpr*) _forList[var]->init)->_leftExpr)->name->entry->Show());
+					YACCGenLog_write_Info(string("Loop ") + loopVar + string(" will be gridified"));
 
-				//todo check all condition variable
-				if (((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->name != ((Variable*) ((RelExpr*) _forList[var]->init)->_leftExpr)->name->name) {
-					nblock = ((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->name;
-					params.push_back(((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->entry->Show());
-				} else {
-					nblock = ((Variable*) ((RelExpr*) _forList[var]->cond)->_rightExpr)->name->name;
-					params.push_back(((Variable*) ((RelExpr*) _forList[var]->cond)->_rightExpr)->name->entry->Show());
-				}
-
-				//one line
-				if (_forList[var]->block->type == ST_ExpressionStemnt) {
-					if (((ExpressionStemnt*) _forList[var]->block)->expression->etype == ET_BinaryExpr) {
-						if (((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr()->etype == ET_IndexExpr) {
-							params.push_back(((Variable*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr())->array)->name->entry->Show());
-						}
-						params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->array)->name->entry->Show());
-						params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_rightExpr)->array)->name->entry->Show());
+					//todo check all condition variable
+					if (((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->name != ((Variable*) ((RelExpr*) _forList[var]->init)->_leftExpr)->name->name) {
+						nblock = ((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->name;
+						params.push_back(((Variable*) ((RelExpr*) _forList[var]->cond)->_leftExpr)->name->entry->Show());
+					} else {
+						nblock = ((Variable*) ((RelExpr*) _forList[var]->cond)->_rightExpr)->name->name;
+						params.push_back(((Variable*) ((RelExpr*) _forList[var]->cond)->_rightExpr)->name->entry->Show());
 					}
+
+					//one line
+					if (_forList[var]->block->type == ST_ExpressionStemnt) {
+						if (((ExpressionStemnt*) _forList[var]->block)->expression->etype == ET_BinaryExpr) {
+							if (((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr()->etype == ET_IndexExpr) {
+								params.push_back(((Variable*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr())->array)->name->entry->Show());
+							}
+							params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->array)->name->entry->Show());
+							params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_rightExpr)->array)->name->entry->Show());
+						}
+					} else {
+
+						for (Statement * stemnt = ((Block*) _forList[var]->block)->head; stemnt; stemnt = stemnt->next) {
+							if (stemnt->type == ST_DeclStemnt) {
+								params.push_back(((DeclStemnt*) stemnt)->decls[0]->name->entry->Show());
+							} else if (stemnt->type == ST_ExpressionStemnt) {
+
+								if (((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr()->etype == ET_IndexExpr) {
+									params.push_back(((Variable*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->leftExpr())->array)->name->entry->Show());
+								}
+//fixme block for iterations!
+								if (((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr)->etype != ET_BinaryExpr) {
+
+									if (((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr->etype == ET_IndexExpr) {
+										params.push_back(((Variable*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr)->array)->name->entry->Show());
+									} else if (((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr->etype == ET_Variable) {
+										params.push_back(((Variable*) ((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr)->name->entry->Show());
+									}
+
+								} else {
+									params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr))->_leftExpr)->array)->name->entry->Show());
+									params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) stemnt)->expression)->_rightExpr))->_rightExpr)->array)->name->entry->Show());
+								}
+
+							}
+						}
+					}
+
+					_cudaGenerator[var]->add_method(params);
+					_cudaGenerator[var]->add_openBlock();
+
+					string firstVal = "0";
+					_cudaGenerator[var]->add_line(string("if(") + firstVal + tok_lt + nblock + string("  )"));
+					_cudaGenerator[var]->add_openBlock();
+
+					yaccgen_param _nblock { string(kernelfunction.int32()), string(cudafunction.gr_btnumx()), "_nblock" };
+					_cudaGenerator[var]->add_param(_nblock);
+
+					yaccgen_param _startIter { kernelfunction.int32(), string(cudafunction.gr_atidx()), "_startIter" };
+					_cudaGenerator[var]->add_param(_startIter);
+
+					yaccgen_param _endIter { kernelfunction.int32(), nblock, "_endIter" };
+					_cudaGenerator[var]->add_param(_endIter);
+
+					yaccgen_param _loopVar { kernelfunction.int32(), "", "_i" };
+					_cudaGenerator[var]->add_param(_loopVar);
+
+					_cudaGenerator[var]->add_for(_loopVar.name + tok_eq + _startIter.name, _loopVar.name + tok_lt + _endIter.name, _loopVar.name + tok_addeq + _nblock.name);
+					_cudaGenerator[var]->add_openBlock();
+					stringstream ss;
+					((ExpressionStemnt*) _forList[var]->block)->print(ss, 0);
+					string tmpComp = ss.str();
+					replaceAll(tmpComp, loopVar, "_i");
+					_cudaGenerator[var]->add_line(tmpComp + tok_semicolon);
+
+					_cudaGenerator[var]->add_closeBlock();
+					_cudaGenerator[var]->add_closeBlock();
+					_cudaGenerator[var]->add_closeBlock();
 				}
-				_cudaGenerator[var]->add_method(params);
-				_cudaGenerator[var]->add_openBlock();
 
-				string firstVal = "0";
-				_cudaGenerator[var]->add_line(string("if(") + firstVal + tok_lt + nblock + string("  )"));
-				_cudaGenerator[var]->add_openBlock();
-
-				yaccgen_param _nblock { string(kernelfunction.int32()), string(cudafunction.gr_btnumx()), "_nblock" };
-				_cudaGenerator[var]->add_param(_nblock);
-
-				yaccgen_param _startIter { kernelfunction.int32(), string(cudafunction.gr_atidx()), "_startIter" };
-				_cudaGenerator[var]->add_param(_startIter);
-
-				yaccgen_param _endIter { kernelfunction.int32(), nblock, "_endIter" };
-				_cudaGenerator[var]->add_param(_endIter);
-
-				yaccgen_param _loopVar { kernelfunction.int32(), "", "_i" };
-				_cudaGenerator[var]->add_param(_loopVar);
-
-				_cudaGenerator[var]->add_for(_loopVar.name + tok_eq + _startIter.name, _loopVar.name + tok_lt + _endIter.name, _loopVar.name + tok_addeq + _nblock.name);
-				_cudaGenerator[var]->add_openBlock();
-				stringstream ss;
-				((ExpressionStemnt*) _forList[var]->block)->expression->print(ss);
-				string tmpComp = ss.str();
-				replaceAll(tmpComp, loopVar, "_i");
-				_cudaGenerator[var]->add_line(tmpComp + tok_semicolon);
-
-				_cudaGenerator[var]->add_closeBlock();
-				_cudaGenerator[var]->add_closeBlock();
-				_cudaGenerator[var]->add_closeBlock();
+			} catch (exception e) {
+				throw YACCGenCodegenException(getClassName(this) + " cuda generation : " + e.what());
+			} catch (YACCGenCodegenException e) {
+				YACCGenLog_write_Error(e.what());
 			}
 		}
 
