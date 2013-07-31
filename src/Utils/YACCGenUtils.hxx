@@ -17,7 +17,7 @@
 #include "YACCGenLog.hxx"
 #include "YACCGenException.hxx"
 #include "YACCGenStrParser.hxx"
-
+#include <unistd.h>
 using namespace std;
 
 namespace yaccgen {

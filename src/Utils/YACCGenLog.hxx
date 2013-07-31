@@ -16,6 +16,7 @@
 using namespace std;
 
 namespace yaccgen {
+	extern const bool info;
 
 	void YACCGenLog_write_Debug(string log);
 

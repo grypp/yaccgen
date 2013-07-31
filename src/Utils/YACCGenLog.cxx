@@ -13,9 +13,10 @@
 namespace yaccgen {
 
 	static YACCGenLog logger;
+	//static bool logInfo=false;
 
 	void YACCGenLog_write_Debug(string log) {
-		logger.write("[YACCGEN][DEBUG]", log);
+		//logger.write("[YACCGEN][DEBUG]", log);
 	}
 
 	void YACCGenLog_write_Info(string log) {

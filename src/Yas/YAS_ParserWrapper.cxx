@@ -56,7 +56,7 @@ namespace yaccgen {
 
 				//FOR EACH blocks in the list will be generated new kernel!
 				for (uint var = 0; var < _forList.size(); ++var) {
-					this->_cudaGenerator.push_back(new YAS_CudaGen());
+					this->_cudaGenerator.push_back(new YAS_CudaGen(pre_yaccgen + pre_kernel + yaccgen::gen_str(5)));
 					string nblock, loopVar;
 					//todo change parameter table!
 					//ParameterTable params;

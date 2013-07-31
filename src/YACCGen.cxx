@@ -29,9 +29,10 @@ using namespace yaccgen;
 //============================================================================
 
 char *input, *output;
-
 bool removeFile = true;
 string CPPFLAGS;
+const bool info=false;
+
 void cl_parse(int argc, char* argv[]) {
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] == '-') {
@@ -46,7 +47,11 @@ void cl_parse(int argc, char* argv[]) {
 			} else if (argv[i][1] == 'h') {
 				cout << HELP_STRING << endl;
 				exit(1);
-			} else if (argv[i][1] == 'o') {
+			}
+			else if (argv[i][1] == 'i') {
+				const bool info=true;
+			}
+			else if (argv[i][1] == 'o') {
 				output = argv[i + 1];
 				i++;
 			} else if (argv[i][1] == 'a') {
@@ -59,6 +64,7 @@ void cl_parse(int argc, char* argv[]) {
 		fprintf(stderr, HELP_STRING);
 		exit(1);
 	}
+	srand(time(NULL));
 }
 
 int main(int argc, char* argv[]) {

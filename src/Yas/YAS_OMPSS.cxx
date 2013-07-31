@@ -92,9 +92,8 @@ namespace yaccgen {
 							_ompssGenerator->add_line(parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_invoke() + tok_semicolon);
 							_ompssHeaderGenerator->add_line(parser->_cudaGenerator[kernelNameCounter]->YAS_get_kernel_signature() + tok_semicolon);
 							kernelNameCounter++;
-						}if (line.find(tok_omp_task_wait, 0) != std::string::npos) {
-							_ompssGenerator->add_line(line);
-						}
+						} else _ompssGenerator->add_line(line);
+
 					} else _ompssGenerator->add_line(line);
 				}
 
