@@ -48,6 +48,7 @@ namespace yaccgen {
 				}
 			}
 		}
+
 		void YAS_ParserWrapper::generate_cuda() {
 
 			KernelFunctions kernelfunction;
@@ -85,8 +86,20 @@ namespace yaccgen {
 							if (((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr()->etype == ET_IndexExpr) {
 								params.push_back(((Variable*) ((IndexExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->leftExpr())->array)->name->entry->Show());
 							}
-							params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->array)->name->entry->Show());
-							params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_rightExpr)->array)->name->entry->Show());
+
+							if (((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->leftExpr()->etype == ET_IndexExpr) {
+								params.push_back(((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->array)->name->entry->Show());
+							} else if (((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->leftExpr()->etype == ET_BinaryExpr) {
+								if (((BinaryExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->_leftExpr->etype == ET_IndexExpr) params.push_back(
+										((Variable*) ((IndexExpr*) ((BinaryExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->_leftExpr)->array)->name->entry->Show());
+								else params.push_back(((Variable*) ((BinaryExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->_leftExpr)->name->entry->Show());
+
+								if (((BinaryExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->_rightExpr->etype == ET_IndexExpr) params.push_back(
+										((Variable*) ((IndexExpr*) ((BinaryExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->_rightExpr)->array)->name->entry->Show());
+								else params.push_back(((Variable*) ((BinaryExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_leftExpr)->_rightExpr)->name->entry->Show());
+							}
+							if (std::find(params.begin(), params.end(), ((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_rightExpr)->array)->name->entry->Show()) == params.end()) params.push_back(
+									((Variable*) ((IndexExpr*) ((BinaryExpr*) ((AssignExpr*) ((ExpressionStemnt*) _forList[var]->block)->expression)->_rightExpr)->_rightExpr)->array)->name->entry->Show());
 						}
 					} else {
 
