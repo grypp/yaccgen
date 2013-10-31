@@ -1,4 +1,5 @@
 yaccgen
 =======
 
-yet another openaCC generator
+GPGPU code generator for the OmpSs compiler.
+(depreceted)
