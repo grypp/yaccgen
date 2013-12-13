@@ -32,7 +32,7 @@ char *input, *output;
 bool removeFile = true;
 string CPPFLAGS;
 const bool info=false;
-
+//LOLWTF
 void cl_parse(int argc, char* argv[]) {
 	for (int i = 0; i < argc; i++) {
 		if (argv[i][0] == '-') {
